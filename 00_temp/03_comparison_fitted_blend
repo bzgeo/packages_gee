@@ -1,0 +1,4 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var img1 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_02_evi_ft_c2_202403_202502_4km"),
+    img2 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_01_ndvi_filled_202403_202502_4km");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/

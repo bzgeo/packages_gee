@@ -1,0 +1,182 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* Finds most recent image for an roi from an image collection
+Last updated: 02.05.2025
+
+var x = require('users/servirbz/packages:img_recent');
+
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var a = require('users/bzgeo/hyperspectral_toolkit:00_pkg/ref_data_pace_oci');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function most_recent(txt, coll, pt) {
+
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+//var dates = coll.filterBounds(pt).aggregate_array(t).map(function(img) {return ee.Date(img).format(d).slice(0,10)});
+var dates = coll.filterBounds(pt).aggregate_array(t).map(function(img) {return ee.Date(img).format(d)});
+
+print("most recent image ", txt, ee.Date(ee.Image(coll.filterBounds(pt).sort(t, false).first()).get(t)).format(d));
+print("total number of images ", txt, coll.filterBounds(pt).size());
+print(dates);
+
+}
+
+exports.most_recent = most_recent;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function total_no(txt, coll, roi) {
+
+print("total number of images ", txt, coll.filterBounds(roi).size());
+}
+
+exports.total_no = total_no;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function most_recent_(txt, coll, pt) {
+
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+
+print("most recent ", txt, ee.Date(ee.Image(coll.filterBounds(pt).sort(t, false).first()).get(t)).format(d));
+}
+
+exports.most_recent_ = most_recent_;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function most_recent__(coll, pt) {
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+var date = ee.Date(ee.Image(coll.filterBounds(pt).sort(t, false).first()).get(t)).format(d);
+return date.getInfo();}
+
+exports.most_recent__ = most_recent__;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* Finds oldest image for an roi from an image collection
+ */
+
+function most_ancient(txt, coll, pt) {
+
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+
+print("earliest ", txt, ee.Date(ee.Image(coll.filterBounds(pt).sort(t, true).first()).get(t)).format(d));
+print("number of images ", txt, coll.filterBounds(pt).size());
+}
+
+exports.most_ancient = most_ancient;
+
+
+function most_ancient_(txt, coll, pt) {
+
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+
+print("earliest ", txt, ee.Date(ee.Image(coll.filterBounds(pt).sort(t, true).first()).get(t)).format(d));
+}
+
+exports.most_ancient_ = most_ancient_;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* Loads image collections for commonly used imagery
+ */
+
+// var skysat = ee.ImageCollection("SKYSAT/GEN-A/PUBLIC/ORTHO/RGB");
+// var avnir = ee.ImageCollection("JAXA/ALOS/AVNIR-2/ORI");
+var aster = ee.ImageCollection("ASTER/AST_L1T_003");
+
+var l4_1 = ee.ImageCollection("LANDSAT/LT04/C02/T1_L2");
+var l4_2 = ee.ImageCollection("LANDSAT/LT04/C02/T2_L2");
+
+var l5_1 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2");
+var l5_2 = ee.ImageCollection("LANDSAT/LT05/C02/T2_L2");
+
+var l7_0 = ee.ImageCollection("LANDSAT/LE07/C02/T1_RT");
+var l7_00 = ee.ImageCollection("LANDSAT/LE07/C02/T1_RT_TOA");
+var l7_1 = ee.ImageCollection("LANDSAT/LE07/C02/T1");
+var l7_2 = ee.ImageCollection("LANDSAT/LE07/C02/T2");
+
+var l8_0 = ee.ImageCollection("LANDSAT/LC08/C02/T1_RT");
+var l8_00 = ee.ImageCollection("LANDSAT/LC08/C02/T1_RT_TOA");
+var l8_1 = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2");
+var l8_2 = ee.ImageCollection("LANDSAT/LC08/C02/T2_L2");
+
+var l9_00 = ee.ImageCollection("LANDSAT/LC09/C02/T1_TOA");
+var l9_1 = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2");
+
+var s2 = ee.ImageCollection("COPERNICUS/S2_SR");
+var s2_ = ee.ImageCollection("COPERNICUS/S2");
+
+var mod09 = ee.ImageCollection("MODIS/061/MOD09GQ");
+var myd09 = ee.ImageCollection("MODIS/061/MYD09GQ");
+var mcd43a4 = ee.ImageCollection("MODIS/061/MCD43A4");
+var viirs = ee.ImageCollection("NOAA/VIIRS/001/VNP09GA");
+var proba100 = ee.ImageCollection("VITO/PROBAV/C1/S1_TOC_100M");
+var proba333 = ee.ImageCollection("VITO/PROBAV/C1/S1_TOC_333M");
+var s3 = ee.ImageCollection("COPERNICUS/S3/OLCI");
+
+var palsar = ee.ImageCollection("JAXA/ALOS/PALSAR/YEARLY/SAR");
+var s1 = ee.ImageCollection("COPERNICUS/S1_GRD");
+var s1_asc = ee.ImageCollection("COPERNICUS/S1_GRD").filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'));
+var s1_dsc = ee.ImageCollection("COPERNICUS/S1_GRD").filter(ee.Filter.eq('orbitProperties_pass', 'DESCENDING'));
+
+var ps_ame = ee.ImageCollection("projects/planet-nicfi/assets/basemaps/americas");
+var ps_afr = ee.ImageCollection("projects/planet-nicfi/assets/basemaps/africa");
+var ps_asia = ee.ImageCollection("projects/planet-nicfi/assets/basemaps/asia");
+
+var hyperion = ee.ImageCollection("EO1/HYPERION");
+var emit = ee.ImageCollection('NASA/EMIT/L2A/RFL');
+var pace_oci_sr = a.pace_oci_mt_global;
+var pace_oci_vi = a.pace_oci_8d_global_vi;
+var pace_oci_evi = a.pace_oci_8d_global_evi;
+
+// exports.skysat = skysat;
+// exports.avnir = avnir;
+exports.aster = aster;
+exports.l4_1 = l4_1;
+exports.l4_2 = l4_2;
+exports.l5_1 = l5_1;
+exports.l5_2 = l5_2;
+exports.l7_0 = l7_0;
+exports.l7_00 = l7_00;
+exports.l7_1 = l7_1;
+exports.l7_2 = l7_2;
+exports.l8_0 = l8_0;
+exports.l8_00 = l8_00;
+exports.l8_1 = l8_1;
+exports.l8_2 = l8_2;
+exports.l9_00 = l9_00;
+exports.l9_1 = l9_1;
+exports.s2 = s2;
+exports.s2_ = s2_;
+exports.mod09 = mod09;
+exports.myd09 = myd09;
+exports.mcd43a4 = mcd43a4;
+exports.viirs = viirs;
+exports.proba100 = proba100;
+exports.proba333 = proba333;
+exports.s3 = s3;
+exports.palsar = palsar;
+exports.s1 = s1;
+exports.s1_asc = s1_asc;
+exports.s1_dsc = s1_dsc;
+exports.ps_ame = ps_ame;
+exports.ps_afr = ps_afr;
+exports.ps_asia = ps_asia;
+exports.hyperion = hyperion;
+exports.emit = emit;
+exports.pace_oci_sr = pace_oci_sr;
+exports.pace_oci_vi = pace_oci_vi;
+exports.pace_oci_evi = pace_oci_evi;
+
+////////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,9 @@
+/* Converts MODIS temperature data from rescaled Kelvin to degrees Celsius */
+
+// Code originally developed by Kel Markert (NASA SERVIR SCO)
+
+function K2C (img){return img.multiply(ee.Number(0.02)).subtract(ee.Number(273.15)).set('system:time_start',img.get('system:time_start'));}
+exports.K2C = K2C;
+
+var filt_fire = function(img){return img.updateMask(img.lt(40));};
+exports.filt_fire = filt_fire;

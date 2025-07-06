@@ -1,0 +1,25 @@
+
+var a = require('users/servirbz/packages:comp_mod43');
+var b = require('users/servirbz/packages:countries2');
+var roi = b.ctry('BZ');
+
+var mod43_2018_med = a.mod43_med(roi, '2018-01-01', '2018-04-30');
+var mod43_2018_mean = a.mod43_mean(roi, '2018-01-01', '2018-04-30');
+var mod43_2018_max = a.mod43_max(roi, '2018-01-01', '2018-04-30');
+var mod43_2018_min = a.mod43_min(roi, '2018-01-01', '2018-04-30');
+
+var mcd09_2018_med = a.mcd09_med(roi, '2018-01-01', '2018-04-30');
+var mcd09_2018_mean = a.mcd09_mean(roi, '2018-01-01', '2018-04-30');
+var mcd09_2018_max = a.mcd09_max(roi, '2018-01-01', '2018-04-30');
+var mcd09_2018_min = a.mcd09_min(roi, '2018-01-01', '2018-04-30');
+
+// Display and center view window on composite
+Map.addLayer(mcd09_2018_max.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mcd09_2018_max');
+Map.addLayer(mcd09_2018_min.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mcd09_2018_min');
+Map.addLayer(mcd09_2018_mean.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mcd09_2018_mean');
+Map.addLayer(mcd09_2018_med.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mcd09_2018_med');
+Map.addLayer(mod43_2018_max.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mod43_2018_max');
+Map.addLayer(mod43_2018_min.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mod43_2018_min');
+Map.addLayer(mod43_2018_mean.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mod43_2018_mean');
+Map.addLayer(mod43_2018_med.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mod43_2018_med');
+Map.centerObject(roi, 8);

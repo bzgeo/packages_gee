@@ -1,0 +1,13 @@
+/* Loads country boundary datasets  */
+
+// Detailed country boundaries - uses ISO ALPHA-2 country codes
+// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+
+var ctry = function(cod){return ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', cod));};
+exports.ctry = ctry;
+
+// Simplified country boundaries - uses FIPS country codes
+// https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+
+var ctry_ = function(cod){return ee.FeatureCollection('USDOS/LSIB_SIMPLE/2017').filter(ee.Filter.eq('country_co', cod));};
+exports.ctry_ = ctry_;

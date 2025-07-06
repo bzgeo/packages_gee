@@ -1,0 +1,34 @@
+// Example of how to use the data export package
+
+// Load processing packages
+
+var p = require('users/servirbz/packages:comp_mod43'); // load compositing package
+var q = require('users/servirbz/packages:sma_std3'); // load SMA package
+var r = require('users/servirbz/packages:export_mod43'); // load exporting package
+
+// Define ROI
+
+var roi = ee.Geometry.Rectangle(-87.70, 15.73, -89.30, 18.60);
+
+// Generate image composite using compositing package
+var mod43_2018 = p.modis_comp(roi, '2018-01-01', '2018-04-30'); // define dates for composite
+
+// Derive SMA output from image composite
+var mod43_sma_2018 = q.sma(mod43_2018);
+
+// Export image composite to EE asset spaces
+r.export_modis_local(mod43_2018, roi);
+r.export_modis_swa(mod43_2018, roi);
+r.export_modis_esa(mod43_2018, roi);
+r.export_modis_amz(mod43_2018, roi);
+
+// Export SMA derivatives from image composite to EE asset spaces
+r.export_modis_sma_local(mod43_sma_2018, roi);
+r.export_modis_sma_swa(mod43_sma_2018, roi);
+r.export_modis_sma_esa(mod43_sma_2018, roi);
+r.export_modis_sma_amz(mod43_sma_2018, roi);
+
+// Display and center view window on composite
+Map.addLayer(mod43_2018.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mod43_2018');
+Map.addLayer(mod43_sma_2018.clip(roi),{}, 'mod43_sma_2018');
+Map.centerObject(roi);

@@ -1,0 +1,49 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* This script generates vegetation indices from diff. collections of optical imagery (e.g. Landsat, MODIS, Sentinel-2) *//
+// ** TO SUPPLEMENT LATER USING TEMPORAL REDUCTION TO GENERATE MONTHLY VI TIME SERIES <-
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var a = require('users/servirbz/packages:img_optical');
+var b = require('users/servirbz/packages:vi');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var ndvi_ast = a.ast.map(b.ndvi_ast);
+var ndvi_l5 = a.l5.map(b.ndvi_l5);
+var ndvi_l7 = a.l7.map(b.ndvi_l7);
+var ndvi_l8 = a.l8.map(b.ndvi_l8);
+var ndvi_s2 = a.s2.map(b.ndvi_s2);
+var ndvi_mod09 = a.mcd09.map(b.ndvi_mod09);
+var ndvi_mod43 = a.mcd43.map(b.ndvi_mod43);
+var ndvi_viirs = a.viirs.map(b.ndvi_viirs);
+var ndvi_s3 = a.s3.map(b.ndvi_s3);
+var ndvi_pbv = a.pbv.map(b.ndvi_pbv);
+
+exports.ndvi_ast = ndvi_ast;
+exports.ndvi_l5 = ndvi_l5;
+exports.ndvi_l7 = ndvi_l7;
+exports.ndvi_l8 = ndvi_l8;
+exports.ndvi_s2 = ndvi_s2;
+exports.ndvi_mod09 = ndvi_mod09;
+exports.ndvi_mod43 = ndvi_mod43;
+exports.ndvi_viirs = ndvi_viirs;
+exports.ndvi_pbv = ndvi_pbv;
+exports.ndvi_s3 = ndvi_s3;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var ndvi_mod09_mt = a.mcd09_mt.map(b.ndvi_mod09);
+var ndvi_mod43_mt = a.mcd43_mt.map(b.ndvi_mod43);
+var ndvi_viirs_mt = a.viirs_mt.map(b.ndvi_viirs);
+var ndvi_s3_mt = a.s3_mt.map(b.ndvi_s3);
+var ndvi_pbv_mt = a.pbv.map(b.ndvi_pbv);
+
+exports.ndvi_mod09_mt = ndvi_mod09_mt;
+exports.ndvi_mod43_mt = ndvi_mod43_mt;
+exports.ndvi_viirs_mt = ndvi_viirs_mt;
+exports.ndvi_pbv_mt = ndvi_pbv_mt;
+exports.ndvi_s3_mt = ndvi_s3_mt;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

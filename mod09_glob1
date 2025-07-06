@@ -1,0 +1,81 @@
+/* Generates a temporally-reduced image collection w/ only 1 image per year */
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var a = require('users/servirbz/packages:temporal_reduction');
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var fromBands = ['sur_refl_b03', 'sur_refl_b04', 'sur_refl_b01', 'sur_refl_b02', 'sur_refl_b06', 'sur_refl_b07'];
+var toBands = ['b1','b2','b3','b4','b6','b7'];
+
+var mod09 = ee.ImageCollection("MODIS/006/MOD09GA").select(fromBands,toBands);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Generate image collections from 2000-2018 - monthly
+var mod09_mt_2000_2018 = a.temp_red(mod09, 1, 12, 2000, 2018);
+var mod09_mt_2003_2017 = a.temp_red(mod09, 1, 12, 2003, 2017);
+var mod09_mt_2003_2018 = a.temp_red(mod09, 1, 12, 2003, 2018);
+var mod09_mt_2003_2018_ = a.temp_red(mod09, 1, 12, 2003, 2018).filterDate('2003-01-01','2018-12-31');
+
+exports.mod09_mt_2000_2018 = mod09_mt_2000_2018;
+exports.mod09_mt_2003_2017 = mod09_mt_2003_2017;
+exports.mod09_mt_2003_2018 = mod09_mt_2003_2018;
+exports.mod09_mt_2003_2018_ = mod09_mt_2003_2018_;
+
+// Generate image collections from 2000-2018 - annual
+var mod09_2000_2018 = a.temp_red_yr_full(mod09, 2000, 2018);
+var mod09_2001_2018 = a.temp_red_yr_full(mod09, 2001, 2018);
+var mod09_2000_2017 = a.temp_red_yr_full(mod09, 2000, 2017);
+var mod09_2001_2017 = a.temp_red_yr_full(mod09, 2001, 2017);
+
+exports.mod09_2000_2018 = mod09_2000_2018;
+exports.mod09_2001_2018 = mod09_2001_2018;
+exports.mod09_2000_2017 = mod09_2000_2017;
+exports.mod09_2001_2017 = mod09_2001_2017;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Generate individual image mosaics per year
+var mod09_2000 = a.temp_red_yr_full(mod09, 2000, 2000).median();
+var mod09_2001 = a.temp_red_yr_full(mod09, 2001, 2001).median();
+var mod09_2002 = a.temp_red_yr_full(mod09, 2002, 2002).median();
+var mod09_2003 = a.temp_red_yr_full(mod09, 2003, 2003).median();
+var mod09_2004 = a.temp_red_yr_full(mod09, 2004, 2004).median();
+var mod09_2005 = a.temp_red_yr_full(mod09, 2005, 2005).median();
+var mod09_2006 = a.temp_red_yr_full(mod09, 2006, 2006).median();
+var mod09_2007 = a.temp_red_yr_full(mod09, 2007, 2007).median();
+var mod09_2008 = a.temp_red_yr_full(mod09, 2008, 2008).median();
+var mod09_2009 = a.temp_red_yr_full(mod09, 2009, 2009).median();
+var mod09_2010 = a.temp_red_yr_full(mod09, 2010, 2010).median();
+var mod09_2011 = a.temp_red_yr_full(mod09, 2011, 2011).median();
+var mod09_2012 = a.temp_red_yr_full(mod09, 2012, 2012).median();
+var mod09_2013 = a.temp_red_yr_full(mod09, 2013, 2013).median();
+var mod09_2014 = a.temp_red_yr_full(mod09, 2014, 2014).median();
+var mod09_2015 = a.temp_red_yr_full(mod09, 2015, 2015).median();
+var mod09_2016 = a.temp_red_yr_full(mod09, 2016, 2016).median();
+var mod09_2017 = a.temp_red_yr_full(mod09, 2017, 2017).median();
+var mod09_2018 = a.temp_red_yr_full(mod09, 2018, 2018).median();
+
+exports.mod09_2000 = mod09_2000;
+exports.mod09_2001 = mod09_2001;
+exports.mod09_2002 = mod09_2002;
+exports.mod09_2003 = mod09_2003;
+exports.mod09_2004 = mod09_2004;
+exports.mod09_2005 = mod09_2005;
+exports.mod09_2006 = mod09_2006;
+exports.mod09_2007 = mod09_2007;
+exports.mod09_2008 = mod09_2008;
+exports.mod09_2009 = mod09_2009;
+exports.mod09_2010 = mod09_2010;
+exports.mod09_2011 = mod09_2011;
+exports.mod09_2012 = mod09_2012;
+exports.mod09_2013 = mod09_2013;
+exports.mod09_2014 = mod09_2014;
+exports.mod09_2015 = mod09_2015;
+exports.mod09_2016 = mod09_2016;
+exports.mod09_2017 = mod09_2017;
+exports.mod09_2018 = mod09_2018;
+
+////////////////////////////////////////////////////////////////////////////////////////////////

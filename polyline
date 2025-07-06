@@ -1,0 +1,7 @@
+/* Hollows out polygons */
+
+function ln1(roi){return ee.Image().byte().paint({featureCollection:roi,width:1});}
+exports.ln1 = ln1;
+
+function ln2(roi){return ee.Image().byte().paint({featureCollection:roi,width:2});}
+exports.ln2 = ln2;

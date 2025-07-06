@@ -1,0 +1,9 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var img1 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_02_evi_ft_c2_202403_202502_4km"),
+    roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Last updated: 25.03.2025
+
+Export.image.toDrive({'image': img1, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_evi', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_evi_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});

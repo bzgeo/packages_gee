@@ -1,0 +1,212 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+//* This script imports collections of optical imagery for generating veg. indices *//
+// Last modified: 16 Sept. 2023
+
+// var c = require('users/servirbz/packages:img_optical');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var b = require('users/servirbz/packages:bz/bz');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var from_l5_l7 = ['B1','B2','B3','B4','B5','B7'];
+var from_l8 = ['B2','B3','B4','B5','B6','B7'];
+var from_s2 = ['B2','B3','B4','B8','B11','B12'];
+var from_mcd43 = ['Nadir_Reflectance_Band3','Nadir_Reflectance_Band4','Nadir_Reflectance_Band1','Nadir_Reflectance_Band2','Nadir_Reflectance_Band6','Nadir_Reflectance_Band7'];
+var from_mod09 = ['sur_refl_b03','sur_refl_b04','sur_refl_b01','sur_refl_b02','sur_refl_b06','sur_refl_b07'];
+var from_viirs = ['I1', 'I2', 'I3'];
+var from_s3 = ["Oa02_radiance", "Oa04_radiance", "Oa05_radiance", "Oa06_radiance",
+              "Oa08_radiance", "Oa10_radiance", "Oa11_radiance", "Oa12_radiance", "Oa17_radiance", "Oa18_radiance"];
+var from_pbv = ['BLUE', 'RED', 'NIR', 'SWIR', 'SM'];
+
+var to = ['B1','B2','B3','B4','B5','B7'];
+var to_viirs = ['b1','b2','b3'];
+var to_s3 = ["b2", "b4", "b5", "b6", "b8", "b10", "b11", "b12", "b17", "b18"];
+var to_pbv = ['b1','b2','b3','b4', 'bqa'];
+
+var from_l5_l7_lst = ['B6'];
+var from_l7_lst = ['B6_VCID_1'];
+var from_l8_lst = ['B10'];
+var to_landsat_lst = ['lst'];
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var roi = ee.Geometry.Rectangle(-87.4, 15.73, -89.4, 18.6);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PART 1 - Original, non-temporally compressed data
+
+var l5_1 = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR");
+var l5_2 = ee.ImageCollection("LANDSAT/LT05/C01/T2_SR");
+var l7_1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR");
+var l7_2 = ee.ImageCollection("LANDSAT/LE07/C01/T2_SR");
+var l8_1 = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR");
+var l8_2 = ee.ImageCollection("LANDSAT/LC08/C01/T2_SR");
+
+var l5_1_ = ee.ImageCollection("LANDSAT/LT05/C01/T1_TOA");
+var l5_2_ = ee.ImageCollection("LANDSAT/LT05/C01/T2_TOA");
+var l7_1_ = ee.ImageCollection("LANDSAT/LE07/C01/T1_TOA");
+var l7_2_ = ee.ImageCollection("LANDSAT/LE07/C01/T2_TOA");
+var l8_1_ = ee.ImageCollection("LANDSAT/LC08/C01/T1_RT_TOA");
+var l8_2_ = ee.ImageCollection("LANDSAT/LC08/C01/T2_TOA");
+
+var mod09_ = ee.ImageCollection("MODIS/006/MOD09GA");
+var myd09_ = ee.ImageCollection("MODIS/006/MYD09GA");
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function gapfill(img) {return img.focal_median(1, 'circle', 'pixels', 8).blend(img).set('system:time_start',img.get('system:time_start'))}
+function extr(img) {return ee.Image(img.median().clip(b.bz_landsat_aoi))}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var l5 = ee.ImageCollection(l5_1.merge(l5_2)).select(from_l5_l7,to);
+var l7_ = ee.ImageCollection(l7_1.merge(l7_2)).select(from_l5_l7,to);
+var l7 = l7_.filterBounds(roi).map(gapfill);
+var l8 = ee.ImageCollection(l8_1.merge(l8_2)).select(from_l8,to); // BOA
+var l8_ = ee.ImageCollection(l8_1_.merge(l8_2_)).select(from_l8,to); // TOA
+var landsat = ee.ImageCollection(l5.merge(l7).merge(l8));
+
+var l5_lst = ee.ImageCollection(l5_1.merge(l5_2)).select(from_l5_l7_lst,to_landsat_lst);
+var l7_lst_0 = ee.ImageCollection(l7_1.merge(l7_2)).select(from_l5_l7_lst,to_landsat_lst);
+var l7_lst = l7_lst_0.filterBounds(roi).map(gapfill);
+var l8_lst = ee.ImageCollection(l8_1.merge(l8_2)).select(from_l8_lst,to_landsat_lst);
+var landsat_lst = ee.ImageCollection(l5_lst.merge(l7_lst_0).merge(l8_lst));
+
+var l5_lst_ = ee.ImageCollection(l5_1_.merge(l5_2_)).select(from_l5_l7_lst,to_landsat_lst);
+var l7_lst_00 = ee.ImageCollection(l7_1_.merge(l7_2_)).select(from_l7_lst,to_landsat_lst);
+var l7_lst_ = l7_lst_00.filterBounds(roi).map(gapfill);
+var l8_lst_ = ee.ImageCollection(l8_1_.merge(l8_2_)).select(from_l8_lst,to_landsat_lst);
+var landsat_lst_ = ee.ImageCollection(l5_lst_.merge(l7_lst_).merge(l8_lst_));
+
+var ast = ee.ImageCollection("ASTER/AST_L1T_003");
+var mod09 = mod09_.select(from_mod09,to);
+var myd09 = myd09_.select(from_mod09,to);
+var mcd09 = ee.ImageCollection(mod09_.merge(myd09_)).select(from_mod09,to);
+var mcd43 = ee.ImageCollection("MODIS/006/MCD43A4").select(from_mcd43,to);
+var viirs = ee.ImageCollection("NOAA/VIIRS/001/VNP09GA").select(from_viirs,to_viirs);
+var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED").select(from_s2,to);
+var s2_ = ee.ImageCollection("COPERNICUS/S2").select(from_s2,to);
+var s3 = ee.ImageCollection("COPERNICUS/S3/OLCI").select(from_s3,to_s3);
+var pbv = ee.ImageCollection("VITO/PROBAV/C1/S1_TOC_333M").select(from_pbv,to_pbv);
+
+/////////
+
+exports.gapfill = gapfill;
+exports.extr = extr;
+
+exports.ast = ast;
+exports.l5 = l5;
+exports.l7_ = l7_;
+exports.l7_lst = l7_lst;
+exports.l7 = l7;
+exports.l8 = l8;
+exports.l8_ = l8_;
+exports.landsat = landsat;
+exports.landsat_lst = landsat_lst;
+exports.landsat_lst_ = landsat_lst_;
+exports.s2 = s2;
+exports.s2_ = s2_;
+
+exports.mod09 = mod09;
+exports.myd09 = myd09;
+exports.mcd09 = mcd09;
+exports.mcd43 = mcd43;
+exports.viirs = viirs;
+exports.s3 = s3;
+exports.pbv = pbv;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PART 2 - How to extract data from the previously defined collections
+
+function img_flt(coll, day, roi) {return coll.filterDate(day, day.advance(1, 'day')).filterBounds(roi).median().clip(roi)}
+exports.img_flt = img_flt;
+
+// PART 3 - Belize-extracted data
+
+function s2_bz(day) {return s2.filterBounds(b.bz).filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day')).median().clip(b.bz_landsat)}
+exports.s2_bz = s2_bz;
+
+function l5_bz(day) {return l5.filterBounds(b.bz).filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day')).median().clip(b.bz_landsat)}
+exports.l5_bz = l5_bz;
+
+function l8_bz(day) {return l8.filterBounds(b.bz).filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day')).median().clip(b.bz_landsat)}
+exports.l8_bz = l8_bz;
+
+function l8_bz_(day) {return l8_.filterBounds(b.bz).filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day')).median().multiply(10000).clip(b.bz_landsat)}
+exports.l8_bz_ = l8_bz_;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PART 4 - Monthly data
+
+var a = require('users/servirbz/packages:temporal_reduction');
+
+/////////
+
+var mcd09_mt = a.temp_red(mcd09, 1, 12, 2000, 2020);
+var mcd43_mt = a.temp_red(mcd43, 1, 12, 2000, 2020).filterDate('2000-03-01','2018-08-31');
+var viirs_mt = a.temp_red(viirs, 1, 12, 2011, 2020);
+var s3_mt = a.temp_red(s3, 1, 12, 2016, 2020);
+var pbv_mt = a.temp_red(pbv, 1, 12, 2013, 2020);
+
+var pal_mcd43 = {min:0,max:4500, bands:['B5','B4','B3']};
+
+/////////
+
+exports.mcd09_mt = mcd09_mt;
+exports.mcd43_mt = mcd43_mt;
+exports.viirs_mt = viirs_mt;
+exports.s3_mt = s3_mt;
+exports.pbv_mt = pbv_mt;
+exports.pal_mcd43 = pal_mcd43;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var viz_l7 = {min:11,max:155,bands:['B5','B4','B3']};
+var viz_l7_ = {min:14,max:115,bands:['B5','B4','B3']};
+var viz_l8 = {min:100,max:4000,bands:['B5','B4','B3']};
+var viz_l8_ = {min:0,max:0.4,bands:['B5','B4','B3']};
+var viz_s2 = {min:100,max:4000,bands:['B5','B4','B3']};
+
+var viz_l8_vis = {min:85,max:2314,bands:['B3','B2','B1']};
+var viz_mod_false = {min:100,max:4500, bands:['B5','B4','B3']};
+
+var pal_dnbr = {min: -0.5, max: 1.3, palette: ['limegreen','lime','silver','yellow','orange','red','purple']};
+var pal_dnbr2 = {min: 0.2, max: 1.3, palette: ['orange','red','purple']};
+var pal_dnbr3 = {min: 0.2, max: 1.3, palette: ['red']};
+
+exports.viz_l7 = viz_l7;
+exports.viz_l7_ = viz_l7_;
+exports.viz_l8 = viz_l8;
+exports.viz_l8_ = viz_l8_;
+exports.viz_l8_vis = viz_l8_vis;
+exports.viz_s2 = viz_s2;
+exports.viz_mod_false = viz_mod_false;
+exports.pal_dnbr = pal_dnbr;
+exports.pal_dnbr2 = pal_dnbr2;
+exports.pal_dnbr3 = pal_dnbr3;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function ex(img, roi) {return img.median().clip(roi)}
+exports.ex = ex;
+
+function ex16(img, roi) {return img.median().toInt16().clip(roi)}
+exports.ex16 = ex16;
+
+// Normalized Burn Ratio (NBR)
+function nbr(img) {return img.median().normalizedDifference(["B4","B5"]).updateMask(b.msk)}
+exports.nbr = nbr;
+
+// Differenced Normalized Burn Ratio (DNBR)
+function dnbr(img1, img2, roi) {return nbr(img1).subtract(nbr(img2)).clip(roi)}
+function dnbr_(img1, img2, val, roi) {return nbr(img1).subtract(nbr(img2)).mask(nbr(img1).subtract(nbr(img2)).gte(val)).clip(roi)}
+exports.dnbr = dnbr;
+exports.dnbr_ = dnbr_;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

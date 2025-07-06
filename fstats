@@ -1,0 +1,108 @@
+/* Estimate forest cover percentage using MODIS data
+ */
+
+function fstat_modis(img,res,aoi,year) {
+
+var f_stat = ee.Number(img.clip(aoi).select('constant').eq(1).multiply(ee.Image.pixelArea()).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.sum(),
+  scale: res,
+  maxPixels: 1e18
+}).get('constant')).divide(1000000);
+
+var for_pct = ee.Number(img.clip(aoi).select('constant').eq(1).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: res,
+  maxPixels: 1e18
+}).get('constant')).multiply(100);
+
+var nf_pct = ee.Number(img.clip(aoi).select('constant').eq(0).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: res,
+  maxPixels: 1e18
+}).get('constant')).multiply(100);
+
+print('MODIS, year: ', year);
+print('est. forest area: ', f_stat, 'sq. km');
+print('est. % forest cover: ', for_pct, 'percent');
+print('est. % non-forest cover: ', nf_pct, 'percent');
+
+}
+
+exports.fstat_modis = fstat_modis;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+function fstat_modis_(img,res,aoi, year) {
+
+var f_stat = ee.Number(img.clip(aoi).select('canopy_cover').eq(1).multiply(ee.Image.pixelArea()).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.sum(),
+  scale: res,
+  maxPixels: 1e18
+}).get('canopy_cover')).divide(1000000);
+
+var for_pct = ee.Number(img.clip(aoi).select('canopy_cover').eq(1).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: res,
+  maxPixels: 1e18
+}).get('canopy_cover')).multiply(100);
+
+var nf_pct = ee.Number(img.clip(aoi).select('canopy_cover').eq(0).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: res,
+  maxPixels: 1e18
+}).get('canopy_cover')).multiply(100);
+
+print('MODIS, year: ', year);
+print('est. forest area: ', f_stat, 'sq. km');
+print('est. % forest cover: ', for_pct, 'percent');
+print('est. % non-forest cover: ', nf_pct, 'percent');
+
+}
+
+exports.fstat_modis_ = fstat_modis_;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*** 
+ * Estimate forest cover percentage using Landsat data
+ */
+
+function fstat_landsat(img, res, aoi, year) {
+
+var f_stat = ee.Number(img.clip(aoi).select('constant').eq(1).multiply(ee.Image.pixelArea()).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.sum(),
+  scale: res,
+  maxPixels: 1e18
+}).get('constant')).divide(1000000);
+
+var for_pct = ee.Number(img.clip(aoi).select('constant').eq(1).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: res,
+  maxPixels: 1e18
+}).get('constant')).multiply(100);
+
+var nf_pct = ee.Number(img.clip(aoi).select('constant').eq(0).reduceRegion({
+  geometry: aoi.geometry(),
+  reducer: ee.Reducer.mean(),
+  scale: res,
+  maxPixels: 1e18
+}).get('constant')).multiply(100);
+
+print('Landsat, year: ', year);
+print('est. forest area: ', f_stat, 'sq. km');
+print('est. % forest cover: ', for_pct, 'percent');
+print('est. % non-forest cover: ', nf_pct, 'percent');
+
+}
+
+exports.fstat_landsat = fstat_landsat;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////

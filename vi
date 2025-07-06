@@ -1,0 +1,62 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* This script generates vegetation indices from diff. collections of optical imagery (e.g. Landsat, MODIS, Sentinel-2) *//
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var fro_ = ['constant'];
+var from_ = ['nd'];
+var to = ['EVI'];
+var to_ = ['NDVI'];
+
+///////
+
+// ASTER, Landsat collections
+var ndvi_ast = function(img) {return img.normalizedDifference(["B3N","B02"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_l5 = function(img) {return img.normalizedDifference(["B4","B3"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_l7 = function(img) {return img.normalizedDifference(["B4","B3"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_l8 = function(img) {return img.normalizedDifference(["B5","B4"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+
+exports.ndvi_ast = ndvi_ast;
+exports.ndvi_l5 = ndvi_l5;
+exports.ndvi_l7 = ndvi_l7;
+exports.ndvi_l8 = ndvi_l8;
+
+///////
+
+// MODIS and VIIRS collections
+var ndvi_mod09 = function(img) {return img.normalizedDifference(["sur_refl_b02","sur_refl_b01"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_mod09_ = function(img) {return img.normalizedDifference(["b4","b3"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_mod43 = function(img) {return img.normalizedDifference(["Nadir_Reflectance_Band2","Nadir_Reflectance_Band1"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_mod43_ = function(img) {return img.normalizedDifference(["b4","b3"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_viirs = function(img) {return img.normalizedDifference(["I2","I1"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+
+exports.ndvi_mod09 = ndvi_mod09;
+exports.ndvi_mod09_ = ndvi_mod09_;
+exports.ndvi_mod43 = ndvi_mod43;
+exports.ndvi_mod43_ = ndvi_mod43_;
+exports.ndvi_viirs = ndvi_viirs;
+
+var evi_mod43_ = function(img) {return img.expression('2.5*((NIR-RED)/(NIR + 6 * RED -7.5 * BLUE + 1))',
+{"NIR":img.select("b4"),"RED":img.select('b3'),"BLUE":img.select('b1')})
+.set('system:time_start',img.get('system:time_start')).select(fro_,to)};
+
+exports.evi_mod43_ = evi_mod43_;
+
+///////
+
+// PROBA-V, Sentinel-2, Sentinel-3 collections
+var ndvi_pbv = function(img) {return img.normalizedDifference(["NIR","RED"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_s2 = function(img) {return img.normalizedDifference(["B8","B4"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+var ndvi_s3 = function(img) {return img.normalizedDifference(["Oa17_radiance","Oa08_radiance"]).set('system:time_start',img.get('system:time_start')).select(from_,to_)};
+
+exports.ndvi_pbv = ndvi_pbv;
+exports.ndvi_s2 = ndvi_s2;
+exports.ndvi_s3 = ndvi_s3;
+
+///////
+
+var pal_ndvi = {min:-1, max:1, palette: ["red", "blue", "yellow", "green"]};
+exports.pal_ndvi = pal_ndvi;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

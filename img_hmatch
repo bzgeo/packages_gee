@@ -1,0 +1,62 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Histogram equalization
+// Original script from Dr. Nick Clinton of Google
+// Last updated: 13.04.2024
+// var h = require('users/servirbz/packages:img_hmatch');
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Get a FeatureCollection representation of a CDF built from a histogram.
+// The returned FeatureCollection can be used to train a classifer.
+
+function getFC(image, band) {
+  // Histogram equalization start:
+  var histo = image.reduceRegion({
+    reducer: ee.Reducer.histogram({maxBuckets: Math.pow(2, 12), minBucketWidth: 16}), 
+    geometry: image.geometry(), 
+    scale: 100, // orig value was 2m; worked at 100m for Landsat / MODIS matching
+    maxPixels: 1e16, 
+    tileScale: 16}); // orig. tileScale: 4
+//print(histo);
+  
+  var valsList = ee.List(ee.Dictionary(histo.get(band)).get('bucketMeans'));
+  var freqsList = ee.List(ee.Dictionary(histo.get(band)).get('histogram'));
+  var cdfArray = ee.Array(freqsList).accum(0);
+  var total = cdfArray.get([-1]);
+  var normalizedCdf = cdfArray.divide(total);
+  var array = ee.Array.cat([valsList, normalizedCdf], 1);
+
+  return ee.FeatureCollection(array.toList().map(function(list) {
+    return ee.Feature(null, {dn: ee.List(list).get(0), probability: ee.List(list).get(1)})}))}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Equalize a given band between two images. Image1 is golden.
+function equalize(image1, image2, band) {
+  var fc1 = getFC(image1, band);
+  var fc2 = getFC(image2, band);
+      
+  var classifier1 = ee.Classifier.smileRandomForest(100)
+    .setOutputMode('REGRESSION').train({features: fc1, classProperty: 'dn', inputProperties: ['probability']});
+
+  var classifier2 = ee.Classifier.smileRandomForest(100)
+  .setOutputMode('REGRESSION').train({features: fc2, classProperty: 'probability', inputProperties: ['dn']});
+
+// Do the shuffle: DN -> probability -> DN. Return the result.
+  var b = image2.select(band).rename('dn');
+  return b.classify(classifier2, 'probability') // DN -> probability
+          .classify(classifier1, band)} // probability -> DN
+
+// Map the matching function over each band.
+function hmatch(image1, image2, bands) {
+  return ee.Image.cat(bands.map(function(band) {
+    return equalize(image1, image2, band);})).toInt16()}
+
+exports.hmatch = hmatch;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+// EXAMPLE: var s2_match = hmatch(img, img2, ['B2', 'B3', 'B4', 'B5', 'B6', 'B7']).toInt16();
+
+///////////////////////////////////////////////////////////////////////////////////////////////////

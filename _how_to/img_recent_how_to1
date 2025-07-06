@@ -1,0 +1,31 @@
+var r = require('users/servirbz/packages:img_recent');
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var roi = ee.Geometry.Rectangle(-87.4, 15.85, -89.25, 18.53);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var s1 = ee.ImageCollection("COPERNICUS/S1_GRD");
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var s1_asc = s1.filterBounds(roi)
+    .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+    .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
+    .filter(ee.Filter.eq('relativeOrbitNumber_start', 63)).select('VV');
+
+var s1_dsc = s1.filterBounds(roi)
+    .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+    .filter(ee.Filter.eq('orbitProperties_pass', 'DESCENDING'))
+    .filter(ee.Filter.eq('relativeOrbitNumber_start', 128)).select('VV');
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+r.most_ancient("BZ S1 ascending", s1_asc, roi);
+r.most_ancient("BZ S1 descending", s1_dsc, roi);
+
+r.most_recent("BZ S1 ascending", s1_asc, roi);
+r.most_recent("BZ S1 descending", s1_dsc, roi);
+
+////////////////////////////////////////////////////////////////////////////////////////////////

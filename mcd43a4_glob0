@@ -1,0 +1,63 @@
+/* Generates a temporally-reduced image collection w/ only 1 image per year */
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var a = require('users/servirbz/packages:temporal_reduction');
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var fromBands = ['Nadir_Reflectance_Band3','Nadir_Reflectance_Band4','Nadir_Reflectance_Band1','Nadir_Reflectance_Band2','Nadir_Reflectance_Band6','Nadir_Reflectance_Band7'];
+var toBands = ['b1','b2','b3','b4','b6','b7'];
+
+var mod43 = ee.ImageCollection("MODIS/006/MCD43A4").select(fromBands,toBands);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Generate image collection from 2001-2018
+var mod43_2001_2018 = a.temp_red_yr(mod43, 2001, 2018);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Generate individual image mosaics per year
+var mod43_2001 = a.temp_red_yr(mod43, 2001, 2001).median();
+var mod43_2002 = a.temp_red_yr(mod43, 2002, 2002).median();
+var mod43_2003 = a.temp_red_yr(mod43, 2003, 2003).median();
+var mod43_2004 = a.temp_red_yr(mod43, 2004, 2004).median();
+var mod43_2005 = a.temp_red_yr(mod43, 2005, 2005).median();
+var mod43_2006 = a.temp_red_yr(mod43, 2006, 2006).median();
+var mod43_2007 = a.temp_red_yr(mod43, 2007, 2007).median();
+var mod43_2008 = a.temp_red_yr(mod43, 2008, 2008).median();
+var mod43_2009 = a.temp_red_yr(mod43, 2009, 2009).median();
+var mod43_2010 = a.temp_red_yr(mod43, 2010, 2010).median();
+var mod43_2011 = a.temp_red_yr(mod43, 2011, 2011).median();
+var mod43_2012 = a.temp_red_yr(mod43, 2012, 2012).median();
+var mod43_2013 = a.temp_red_yr(mod43, 2013, 2013).median();
+var mod43_2014 = a.temp_red_yr(mod43, 2014, 2014).median();
+var mod43_2015 = a.temp_red_yr(mod43, 2015, 2015).median();
+var mod43_2016 = a.temp_red_yr(mod43, 2016, 2016).median();
+var mod43_2017 = a.temp_red_yr(mod43, 2017, 2017).median();
+var mod43_2018 = a.temp_red_yr(mod43, 2018, 2018).median();
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.mod43_2001_2018 = mod43_2001_2018;
+exports.mod43_2001 = mod43_2001;
+exports.mod43_2002 = mod43_2002;
+exports.mod43_2003 = mod43_2003;
+exports.mod43_2004 = mod43_2004;
+exports.mod43_2005 = mod43_2005;
+exports.mod43_2006 = mod43_2006;
+exports.mod43_2007 = mod43_2007;
+exports.mod43_2008 = mod43_2008;
+exports.mod43_2009 = mod43_2009;
+exports.mod43_2010 = mod43_2010;
+exports.mod43_2011 = mod43_2011;
+exports.mod43_2012 = mod43_2012;
+exports.mod43_2013 = mod43_2013;
+exports.mod43_2014 = mod43_2014;
+exports.mod43_2015 = mod43_2015;
+exports.mod43_2016 = mod43_2016;
+exports.mod43_2017 = mod43_2017;
+exports.mod43_2018 = mod43_2018;
+
+////////////////////////////////////////////////////////////////////////////////////////////////

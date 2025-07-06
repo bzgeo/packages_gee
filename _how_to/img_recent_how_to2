@@ -1,0 +1,38 @@
+ 
+var r = require('users/servirbz/packages:img_recent');
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var pt = ee.Geometry.Point([-88.20, 17.5]).buffer(250);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+r.most_recent("ASTER", r.aster, pt);
+r.most_recent("Hyperion", r.hyperion, pt);
+r.most_recent("Landsat-4 t1", r.l4_1, pt);
+r.most_recent("Landsat-4 t2", r.l4_2, pt);
+r.most_recent("Landsat-5 t1", r.l5_1, pt);
+r.most_recent("Landsat-5 t2", r.l5_2, pt);
+r.most_recent("Landsat-7 t1", r.l7_1, pt);
+r.most_recent("Landsat-7 t2", r.l7_2, pt);
+r.most_recent("Landsat-8 t1", r.l8_1, pt);
+r.most_recent("Landsat-8 t2", r.l8_2, pt);
+r.most_recent("Sentinel-2", r.s2, pt);
+r.most_recent("MODIS-Terra", r.mod09, pt);
+r.most_recent("MODIS-Aqua", r.myd09, pt);
+r.most_recent("MCD43A4", r.mcd43a4, pt);
+r.most_recent("VIIRS", r.viirs, pt);
+r.most_recent("PROBA-V 100m", r.proba100, pt);
+r.most_recent("PROBA-V 333m", r.proba333, pt);
+r.most_recent("Sentinel-3", r.s3, pt);
+r.most_recent("ALOS PALSAR", r.palsar, pt);
+r.most_recent("S1 ascending", r.s1_asc, pt);
+r.most_recent("S1 descending", r.s1_dsc, pt);
+
+////////////////////////////////////////////////////////////////////////////////////
+
+Map.addLayer(pt, {color: 'green'},'Belize City, Belize', true); // display point
+Map.centerObject(pt, 12);
+Map.setOptions('SATELLITE');
+
+/////////////////////////////////////// END /////////////////////////////////////////

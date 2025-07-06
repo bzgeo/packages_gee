@@ -1,0 +1,10 @@
+// Example of how to use the MCD43A4 compositing tool
+
+var roi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/gt/gt_borders_marn"); // define ROI
+
+var p = require('users/servirbz/packages:comp_mod43'); // load compositing package
+var mod43_2018 = p.modis_comp(roi, '2018-01-01', '2018-04-30'); // define dates for composite
+
+// Display and center view window on composite
+Map.addLayer(mod43_2018.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mod43_2018');
+Map.centerObject(roi);

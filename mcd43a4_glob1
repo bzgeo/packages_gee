@@ -1,0 +1,159 @@
+// Generates a temporally-reduced image collection w/ only 1 image per year
+// var x = require('users/servirbz/packages:mcd43a4_glob1');
+// Last updated: 27.06.2025
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var a = require('users/servirbz/packages:temporal_reduction');
+var b = require('users/servirbz/packages:sma_std3');
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var fromBands = ['Nadir_Reflectance_Band3','Nadir_Reflectance_Band4','Nadir_Reflectance_Band1','Nadir_Reflectance_Band2','Nadir_Reflectance_Band6','Nadir_Reflectance_Band7'];
+var toBands = ['b1','b2','b3','b4','b6','b7'];
+
+//var pal_mcd43a4 = {min:0,max:4500, bands:['b6','b4','b3']};
+//var pal_mcd43a4 = {bands: ['b6', 'b4', 'b3'],min: 100, max: 4000};
+var pal_mcd43a4 = {bands: ['b6', 'b4', 'b3'],min: [730, 1800, -740], max:[2200, 3800, 2000]};
+exports.pal_mcd43a4 = pal_mcd43a4;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var mod43 = ee.ImageCollection("MODIS/061/MCD43A4").select(fromBands,toBands);
+exports.mod43 = mod43;
+
+var mcd43a4_sma = mod43.map(b.sma_);
+exports.mcd43a4_sma = mcd43a4_sma;
+//print(mcd43a4_sma);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Mesoamerica & Belize-specific data
+var mcd43a4_sma_ = ee.ImageCollection("users/servirbz/compil_imagery/optical/modis/mcd43a4_cam_sma/mes_mcd43a4__sma");
+exports.mcd43a4_sma_ = mcd43a4_sma_;
+
+/*
+https://code.earthengine.google.com/?scriptPath=users%2Fservirbz%2Fdefault%3Aexports%2Fexport_mcd43a4_sma_mes1_bzgeo
+*/
+
+var mcd43a4_sma_fc = ee.ImageCollection("users/servirbz/compil_ecosys/terrestrial/forest_cover_mes_80pct/mes_fcover_80pct_mcd43_JFMA");
+exports.mcd43a4_sma_fc = mcd43a4_sma_fc;
+
+var mcd43a4_04_sma_ = ee.ImageCollection("users/servirbz/compil_imagery/optical/modis/mcd43a4_cam_sma/mes_mcd43a4_04__sma");
+exports.mcd43a4_04_sma_ = mcd43a4_04_sma_;
+
+var mcd43a4_sma_bz = ee.ImageCollection("users/servirbz/compil_imagery/optical/modis/bz_mcd43a4_sma_2018_2019");
+exports.mcd43a4_sma_bz = mcd43a4_sma_bz;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Generate MONTHLY image collections from 2000-2018
+var mod43_mt_2000_2018 = a.temp_red(mod43, 1, 12, 2000, 2018);
+var mod43_mt_2003_2017 = a.temp_red(mod43, 1, 12, 2003, 2017);
+var mod43_mt_2003_2018 = a.temp_red(mod43, 1, 12, 2003, 2018);
+var mod43_mt_2003_2018_ = a.temp_red(mod43, 1, 12, 2003, 2018).filterDate('2003-01-01','2018-12-31');
+var mod43_mt_2003_2019 = a.temp_red(mod43, 1, 12, 2003, 2019);
+var mod43_mt_2003_2020 = a.temp_red(mod43, 1, 12, 2003, 2020);
+var mod43_mt_2003_2021 = a.temp_red(mod43, 1, 12, 2003, 2021);
+var mod43_mt_2003_2022 = a.temp_red(mod43, 1, 12, 2003, 2022);
+var mod43_mt_2003_2023 = a.temp_red(mod43, 1, 12, 2003, 2023);
+var mod43_mt_2003_2024 = a.temp_red(mod43, 1, 12, 2003, 2024);
+var mod43_mt_2003_2025 = a.temp_red(mod43, 1, 12, 2003, 2025);
+
+exports.mod43_mt_2000_2018 = mod43_mt_2000_2018;
+exports.mod43_mt_2003_2017 = mod43_mt_2003_2017;
+exports.mod43_mt_2003_2018 = mod43_mt_2003_2018;
+exports.mod43_mt_2003_2018_ = mod43_mt_2003_2018_;
+exports.mod43_mt_2003_2019 = mod43_mt_2003_2019;
+exports.mod43_mt_2003_2020 = mod43_mt_2003_2020;
+exports.mod43_mt_2003_2021 = mod43_mt_2003_2021;
+exports.mod43_mt_2003_2022 = mod43_mt_2003_2022;
+exports.mod43_mt_2003_2023 = mod43_mt_2003_2023;
+exports.mod43_mt_2003_2024 = mod43_mt_2003_2024;
+exports.mod43_mt_2003_2025 = mod43_mt_2003_2025;
+//print(mod43_mt_2003_2020);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Generate ANNUAL image collections from 2000-2018
+var mod43_2000_2018 = a.temp_red_yr_full(mod43, 2000, 2018);
+var mod43_2001_2018 = a.temp_red_yr_full(mod43, 2001, 2018);
+var mod43_2000_2017 = a.temp_red_yr_full(mod43, 2000, 2017);
+var mod43_2001_2017 = a.temp_red_yr_full(mod43, 2001, 2017);
+var mod43_2002_2017 = a.temp_red_yr_full(mod43, 2002, 2017);
+
+exports.mod43_2000_2018 = mod43_2000_2018;
+exports.mod43_2001_2018 = mod43_2001_2018;
+exports.mod43_2000_2017 = mod43_2000_2017;
+exports.mod43_2001_2017 = mod43_2001_2017;
+exports.mod43_2002_2017 = mod43_2002_2017;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Generate individual ANNUAL image mosaics
+
+var mod43_2000 = a.temp_red_yr_full(mod43, 2000, 2000).median();
+var mod43_2001 = a.temp_red_yr_full(mod43, 2001, 2001).median();
+var mod43_2002 = a.temp_red_yr_full(mod43, 2002, 2002).median();
+var mod43_2003 = a.temp_red_yr_full(mod43, 2003, 2003).median();
+var mod43_2004 = a.temp_red_yr_full(mod43, 2004, 2004).median();
+var mod43_2005 = a.temp_red_yr_full(mod43, 2005, 2005).median();
+var mod43_2006 = a.temp_red_yr_full(mod43, 2006, 2006).median();
+var mod43_2007 = a.temp_red_yr_full(mod43, 2007, 2007).median();
+var mod43_2008 = a.temp_red_yr_full(mod43, 2008, 2008).median();
+var mod43_2009 = a.temp_red_yr_full(mod43, 2009, 2009).median();
+var mod43_2010 = a.temp_red_yr_full(mod43, 2010, 2010).median();
+var mod43_2011 = a.temp_red_yr_full(mod43, 2011, 2011).median();
+var mod43_2012 = a.temp_red_yr_full(mod43, 2012, 2012).median();
+var mod43_2013 = a.temp_red_yr_full(mod43, 2013, 2013).median();
+var mod43_2014 = a.temp_red_yr_full(mod43, 2014, 2014).median();
+var mod43_2015 = a.temp_red_yr_full(mod43, 2015, 2015).median();
+var mod43_2016 = a.temp_red_yr_full(mod43, 2016, 2016).median();
+var mod43_2017 = a.temp_red_yr_full(mod43, 2017, 2017).median();
+var mod43_2018 = a.temp_red_yr_full(mod43, 2018, 2018).median();
+var mod43_2019 = a.temp_red_yr_full(mod43, 2019, 2019).median();
+var mod43_2020 = a.temp_red_yr_full(mod43, 2020, 2020).median();
+var mod43_2021 = a.temp_red_yr_full(mod43, 2021, 2021).median();
+var mod43_2022 = a.temp_red_yr_full(mod43, 2022, 2022).median();
+var mod43_2023 = a.temp_red_yr_full(mod43, 2023, 2023).median();
+var mod43_2024 = a.temp_red_yr_full(mod43, 2024, 2024).median();
+var mod43_2025 = a.temp_red_yr_full(mod43, 2025, 2025).median();
+
+exports.mod43_2000 = mod43_2000;
+exports.mod43_2001 = mod43_2001;
+exports.mod43_2002 = mod43_2002;
+exports.mod43_2003 = mod43_2003;
+exports.mod43_2004 = mod43_2004;
+exports.mod43_2005 = mod43_2005;
+exports.mod43_2006 = mod43_2006;
+exports.mod43_2007 = mod43_2007;
+exports.mod43_2008 = mod43_2008;
+exports.mod43_2009 = mod43_2009;
+exports.mod43_2010 = mod43_2010;
+exports.mod43_2011 = mod43_2011;
+exports.mod43_2012 = mod43_2012;
+exports.mod43_2013 = mod43_2013;
+exports.mod43_2014 = mod43_2014;
+exports.mod43_2015 = mod43_2015;
+exports.mod43_2016 = mod43_2016;
+exports.mod43_2017 = mod43_2017;
+exports.mod43_2018 = mod43_2018;
+exports.mod43_2019 = mod43_2019;
+exports.mod43_2020 = mod43_2020;
+exports.mod43_2021 = mod43_2021;
+exports.mod43_2022 = mod43_2022;
+exports.mod43_2023 = mod43_2023;
+exports.mod43_2024 = mod43_2024;
+exports.mod43_2025 = mod43_2025;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var x_pct = function(img) {return img.multiply(ee.Number(100)).set('system:time_start',img.get('system:time_start'));};
+exports.x_pct = x_pct;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var bandInfo = {bands: {'MODIS_imagery': {}, 'Forest_cover': {}}, startYear: 2001,endYear: 2025,};
+exports.bandInfo = bandInfo;
+
+////////////////////////////////////////////////////////////////////////////////////////////////

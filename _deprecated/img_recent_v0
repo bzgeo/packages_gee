@@ -1,0 +1,36 @@
+/* Finds most recent image for an roi from an image collection
+ */
+
+function most_recent(txt, coll) {
+
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+
+print("most recent ", txt, ee.Date(ee.Image(coll.sort(t, false).first()).get(t)).format(d));
+}
+
+exports.most_recent = most_recent;
+
+/* Finds oldest image for an roi from an image collection
+ */
+
+function most_ancient(txt, coll) {
+
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+
+print("earliest ", txt, ee.Date(ee.Image(coll.sort(t, true).first()).get(t)).format(d));
+}
+
+exports.most_ancient = most_ancient;
+
+////////////////////////////////////////////////////////////////////////////////////
+
+/* Determines the number of images available from a geographically filtered image collection
+ */
+
+function img_no(txt, coll, aoi) {print("number of images ", txt, coll.filterBounds(aoi).size());}
+
+exports.img_no = img_no;
+
+////////////////////////////////////////////////////////////////////////////////////

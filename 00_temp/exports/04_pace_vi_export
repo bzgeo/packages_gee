@@ -1,0 +1,125 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var img1 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_01_ndvi_b47_4km"),
+    img1b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_01_ndvi_x48_4km"),
+    img2 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_02_evi_b47_4km"),
+    img2b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_02_evi_x48_4km"),
+    img3 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_05_cci_b47_4km"),
+    img3b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_05_cci_x48_4km"),
+    img4 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_07_cire_b47_4km"),
+    img4b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_08_cire_x48_4km"),
+    img5 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_08_car_b47_4km"),
+    img5b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_09_car_x48_4km"),
+    img6 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_09_mari_b47_4km"),
+    img6b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_10_mari_x48_4km"),
+    img7 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_10_pri_b47_4km"),
+    img7b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_07_pri_x48_4km"),
+    roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Last updated: 24.03.2025
+
+var vi1 = ee.Image.cat(img1,img1b);
+
+Export.image.toAsset({image:vi1.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_01_ndvi_b48_4km',scale:4000,
+region:roi, crs: 'EPSG:4326'});
+
+var vi2 = ee.Image.cat(img2,img2b);
+
+Export.image.toAsset({image:vi2.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_02_evi_b48_4km',scale:4000,
+region:roi, crs: 'EPSG:4326'});
+
+var vi3 = ee.Image.cat(img3,img3b);
+
+Export.image.toAsset({image:vi3.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_05_cci_b48_4km',scale:4000,
+region:roi, crs: 'EPSG:4326'});
+
+var vi4 = ee.Image.cat(img4,img4b);
+
+Export.image.toAsset({image:vi4.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_07_cire_b48_4km',scale:4000,
+region:roi, crs: 'EPSG:4326'});
+
+var vi5 = ee.Image.cat(img5,img5b);
+
+Export.image.toAsset({image:vi5.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_08_car_b48_4km',scale:4000,
+region:roi, crs: 'EPSG:4326'});
+
+var vi6 = ee.Image.cat(img6,img6b);
+
+Export.image.toAsset({image:vi6.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_09_mari_b48_4km',scale:4000,
+region:roi, crs: 'EPSG:4326'});
+
+var vi7 = ee.Image.cat(img7,img7b);
+
+Export.image.toAsset({image:vi7.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/vi_10_pri_b48_4km',scale:4000,
+region:roi, crs: 'EPSG:4326'});
+
+
+/*
+var vi01 = vi1.select([0]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,3,12).millis());
+var vi02 = vi1.select([1]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,3,20).millis());
+var vi03 = vi1.select([2]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,3,28).millis());
+var vi04 = vi1.select([3]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,4,5).millis());
+var vi05 = vi1.select([4]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,4,13).millis());
+var vi06 = vi1.select([5]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,4,21).millis());
+var vi07 = vi1.select([6]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,4,29).millis());
+var vi08 = vi1.select([7]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,5,7).millis());
+var vi09 = vi1.select([8]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,5,15).millis());
+var vi10 = vi1.select([9]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,5,23).millis());
+
+var vi11 = vi1.select([10]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,5,31).millis());
+var vi12 = vi1.select([11]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,6,8).millis());
+var vi13 = vi1.select([12]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,6,16).millis());
+var vi14 = vi1.select([13]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,6,24).millis());
+var vi15 = vi1.select([14]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,7,2).millis());
+var vi16 = vi1.select([15]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,7,10).millis());
+var vi17 = vi1.select([16]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,7,18).millis());
+var vi18 = vi1.select([17]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,7,26).millis());
+var vi19 = vi1.select([18]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,8,3).millis());
+var vi20 = vi1.select([19]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,8,11).millis());
+
+var vi21 = vi1.select([20]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,8,19).millis());
+var vi22 = vi1.select([21]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,8,27).millis());
+var vi23 = vi1.select([22]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,9,4).millis());
+var vi24 = vi1.select([23]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,9,12).millis());
+var vi25 = vi1.select([24]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,9,20).millis());
+var vi26 = vi1.select([25]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,9,28).millis());
+var vi27 = vi1.select([26]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,10,6).millis());
+var vi28 = vi1.select([27]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,10,14).millis());
+var vi29 = vi1.select([28]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,10,22).millis());
+var vi30 = vi1.select([29]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,10,30).millis());
+
+var vi31 = vi1.select([30]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,11,7).millis());
+var vi32 = vi1.select([31]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,11,15).millis());
+var vi33 = vi1.select([32]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,11,23).millis());
+var vi34 = vi1.select([33]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,12,1).millis());
+var vi35 = vi1.select([34]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,12,9).millis());
+var vi36 = vi1.select([35]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,12,17).millis());
+var vi37 = vi1.select([36]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,12,25).millis());
+var vi38 = vi1.select([37]).rename('vi').set('system:time_start',ee.Date.fromYMD(2024,12,31).millis());
+var vi39 = vi1.select([38]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,1,8).millis());
+var vi40 = vi1.select([39]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,1,16).millis());
+
+var vi41 = vi1.select([40]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,1,24).millis());
+var vi42 = vi1.select([41]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,2,1).millis());
+var vi43 = vi1.select([42]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,2,9).millis());
+var vi44 = vi1.select([43]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,2,17).millis());
+var vi45 = vi1.select([44]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,2,25).millis());
+var vi46 = vi1.select([45]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,3,5).millis());
+var vi47 = vi1.select([46]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,3,13).millis());
+var vi48 = vi1.select([47]).rename('vi').set('system:time_start',ee.Date.fromYMD(2025,3,21).millis());
+
+vi1 = ee.Image.cat(
+[vi01,vi02,vi03,vi04,vi05,vi06,vi07,vi08,vi09,vi10,
+vi11,vi12,vi13,vi14,vi15,vi16,vi17,vi18,vi19,vi20,
+vi21,vi22,vi23,vi24,vi25,vi26,vi27,vi28,vi29,vi30,
+vi31,vi32,vi33,vi34,vi35,vi36,vi37,vi38,vi39,vi40,
+vi41,vi42,vi43,vi44,vi45,vi46,vi47,vi48]);
+
+print(vi1);
+*/

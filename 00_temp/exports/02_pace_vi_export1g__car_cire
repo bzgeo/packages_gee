@@ -1,0 +1,21 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe"),
+    img1a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_07_cire_b47_4km"),
+    img1b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_07_cire_x48_4km"),
+    img2a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_08_car_b47_4km"),
+    img2b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_08_car_x48_4km");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Last updated: 25.03.2025
+
+var cire = ee.Image.cat(img1a, img1b.select(["b8"],["b48"]));
+var car = ee.Image.cat(img2a, img2b.select(["b9"],["b48"]));
+print(cire);
+print(car);
+
+Export.image.toAsset({image:cire.updateMask(cire.gte(-10000)).clip(roi), description:'export_ee_pace_cire',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_07_cire_x10k_b48_4km',
+scale:4638.312214700219, region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:car.updateMask(car.gte(-10000)).clip(roi), description:'export_ee_pace_car',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/8day_4km/vi_08_car_x10k_b48_4km',
+scale:4638.312214700219, region:roi, crs: 'EPSG:4326'});

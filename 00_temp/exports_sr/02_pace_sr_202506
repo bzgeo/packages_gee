@@ -1,0 +1,47 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var img1 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250601_L3m_1D_SFREFL_V3_"),
+    img2 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250602_20250609_L3m_8D_SFREFL_V3_"),
+    img3 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250610_20250617_L3m_8D_SFREFL_V3_"),
+    img4 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250618_20250625_L3m_8D_SFREFL_V3_"),
+    img5 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250626_L3m_1D_SFREFL_V3_"),
+    img6 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250627_L3m_1D_SFREFL_V3_"),
+    img7 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250628_L3m_1D_SFREFL_V3_"),
+    img8 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250629_L3m_1D_SFREFL_V3_"),
+    img9 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/PACE_OCI_20250630_L3m_1D_SFREFL_V3_");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+var b = require('users/bzgeo/hyperspectral_toolkit:00_pkg/emit_hyperion_pace');
+
+var roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe");
+
+img1 = img1.updateMask(img1.gt(0)).multiply(10000).toInt16();
+img2 = img2.updateMask(img2.gt(0)).multiply(10000).toInt16();
+img3 = img3.updateMask(img3.gt(0)).multiply(10000).toInt16();
+img4 = img4.updateMask(img4.gt(0)).multiply(10000).toInt16();
+img5 = img5.updateMask(img5.gt(0)).multiply(10000).toInt16();
+img6 = img6.updateMask(img6.gt(0)).multiply(10000).toInt16();
+img7 = img7.updateMask(img7.gt(0)).multiply(10000).toInt16();
+img8 = img8.updateMask(img8.gt(0)).multiply(10000).toInt16();
+img9 = img9.updateMask(img9.gt(0)).multiply(10000).toInt16();
+
+var img = ee.ImageCollection.fromImages([img1,img2,img3,img4,img5,img6,img7,img8,img9]).median().toInt16();
+print(img);
+
+Map.setCenter(19.28, 12.75, 3);
+Map.setOptions('SATELLITE');
+
+Map.addLayer(img1, b.viz3, "1", 0);
+Map.addLayer(img2, b.viz3, "2", 0);
+Map.addLayer(img3, b.viz3, "3", 0);
+Map.addLayer(img4, b.viz3, "4", 0);
+Map.addLayer(img5, b.viz3, "5", 0);
+Map.addLayer(img6, b.viz3, "6", 0);
+Map.addLayer(img7, b.viz3, "7", 0);
+Map.addLayer(img8, b.viz3, "8", 0);
+Map.addLayer(img9, b.viz3, "9", 0);
+
+Map.addLayer(img, b.viz3, "PACE OCI SR - June 2025", 1);
+
+Export.image.toAsset({image:img,description:'export_ee_pace_sr_2025-06',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/global_10km/globe_pace_oci_sr_v3_202506x1',scale:10000,
+region: roi, crs: 'EPSG:4326'});

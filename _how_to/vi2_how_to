@@ -1,0 +1,33 @@
+
+var center_pt = ee.Geometry.Point([-2.5739, 5.286]);
+
+var a = require('users/servirbz/packages:vi2');
+
+var chart1 = ui.Chart.image.series(a.ndvi_ast, center_pt, ee.Reducer.mean(), 100)
+.setOptions({title: "Mean ASTER NDVI, 2000-2018",vAxis:{title:'% fractional cover'},
+pointSize:5,series:{0:{color:'limegreen'}}});
+//print(chart1);
+
+var chart2 = ui.Chart.image.series(a.ndvi_s2, center_pt, ee.Reducer.mean(), 100)
+.setOptions({title: "Mean Sentinel-2 NDVI, 2015-2018",vAxis:{title:'% fractional cover'},
+pointSize:5,series:{0:{color:'limegreen'}}});
+print(chart2);
+
+var chart3 = ui.Chart.image.series(a.ndvi_l8, center_pt, ee.Reducer.mean(), 100)
+.setOptions({title: "Mean Landsat-8 NDVI, 2013-2018",vAxis:{title:'% fractional cover'},
+pointSize:5,series:{0:{color:'limegreen'}}});
+//print(chart3);
+
+//print(a.ndvi_mod43_mt);
+
+var chart10 = ui.Chart.image.series(a.ndvi_mod43_mt, center_pt, ee.Reducer.mean(), 1000)
+.setOptions({title: "Mean Landsat-8 NDVI, 2013-2018",vAxis:{title:'% fractional cover'},
+pointSize:5,series:{0:{color:'limegreen'}}});
+
+print(chart10);
+
+//var b = require('users/servirbz/packages:temporal_reduction');
+//var c = require('users/servirbz/packages:img_optical');
+
+//print(c.mcd43_mt.filterDate('2017-01-01','2018-08-31'));
+

@@ -1,0 +1,22 @@
+
+var a = require('users/servirbz/packages:mcd43a4_cam'); // import MODIS imagery from 2000-2018 dry seasons
+
+var mod43_2000 = a.mod43_2000;
+var mod43_2001 = a.mod43_2001;
+var mod43_2002 = a.mod43_2002;
+var mod43_2003 = a.mod43_2003;
+var mod43_2004 = a.mod43_2004;
+var mod43_2005 = a.mod43_2005;
+var mod43_2006 = a.mod43_2006;
+var mod43_2007 = a.mod43_2007;
+var mod43_2008 = a.mod43_2008;
+var mod43_2009 = a.mod43_2009;
+var mod43_2010 = a.mod43_2010;
+var mod43_2011 = a.mod43_2011;
+var mod43_2012 = a.mod43_2012;
+var mod43_2013 = a.mod43_2013;
+var mod43_2014 = a.mod43_2014;
+var mod43_2015 = a.mod43_2015;
+var mod43_2016 = a.mod43_2016;
+var mod43_2017 = a.mod43_2017;
+var mod43_2018 = a.mod43_2018;

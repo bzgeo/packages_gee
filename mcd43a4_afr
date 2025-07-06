@@ -1,0 +1,52 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var afr_mod43 = ee.ImageCollection("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017"),
+    mod43_2000 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2000"),
+    mod43_2001 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2001"),
+    mod43_2002 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2002"),
+    mod43_2003 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2003"),
+    mod43_2004 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2004"),
+    mod43_2005 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2005"),
+    mod43_2006 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2006"),
+    mod43_2007 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2007"),
+    mod43_2008 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2008"),
+    mod43_2009 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2009"),
+    mod43_2010 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2010"),
+    mod43_2011 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2011"),
+    mod43_2012 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2012"),
+    mod43_2013 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2013"),
+    mod43_2014 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2014"),
+    mod43_2015 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2015"),
+    mod43_2016 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2016"),
+    mod43_2017 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2017"),
+    mod43_2018 = ee.Image("projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_2000_2017/afr_mcd43a4_2018"),
+    roi_afr = ee.FeatureCollection("projects/servir-wa/aoi/africa_aoi_buff1km"),
+    bnds = ee.FeatureCollection("users/servirbz/aoi/global/world_country_bounds_esri");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+/* Loads MODIS MCD43A4 surface reflectance data for Africa */
+
+// MODIS (MCD43A4) imagery loaded as Imports
+
+// Ancillary datasets partially loaded in the *Imports* line
+var bnds_ln = ee.Image().byte().paint({featureCollection:bnds,color: 'ffffff',width:2});
+
+exports.mod43_2000 = mod43_2000;
+exports.mod43_2001 = mod43_2001;
+exports.mod43_2002 = mod43_2002;
+exports.mod43_2003 = mod43_2003;
+exports.mod43_2004 = mod43_2004;
+exports.mod43_2005 = mod43_2005;
+exports.mod43_2006 = mod43_2006;
+exports.mod43_2007 = mod43_2007;
+exports.mod43_2008 = mod43_2008;
+exports.mod43_2009 = mod43_2009;
+exports.mod43_2010 = mod43_2010;
+exports.mod43_2011 = mod43_2011;
+exports.mod43_2012 = mod43_2012;
+exports.mod43_2013 = mod43_2013;
+exports.mod43_2014 = mod43_2014;
+exports.mod43_2015 = mod43_2015;
+exports.mod43_2016 = mod43_2016;
+exports.mod43_2017 = mod43_2017;
+exports.mod43_2018 = mod43_2018;
+exports.roi_afr = roi_afr;
+exports.bnds_ln = bnds_ln;

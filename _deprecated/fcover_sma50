@@ -1,0 +1,12 @@
+/* Extracts forest cover based on SMA derivatives, uses 50% PV fraction threshold
+ */
+
+function fcover(img, roi) {
+  return ee.Image(0).where(img.select('band_1').gt(0.50).and(img.select('band_0').lt(0.50)),1)
+  .clip(roi)
+  .updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+
+// user must define input SMA data (3 bands), as well as the region of interest (roi)
+
+exports.fcover = fcover;

@@ -1,0 +1,18 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Masks for different types of images
+// var m = require('users/servirbz/packages:img_msk');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// .map(maskS2clouds)
+
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
+  var cloudBitMask = ee.Number(2).pow(10).int();
+  var cirrusBitMask = ee.Number(2).pow(11).int();
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0).and(qa.bitwiseAnd(cirrusBitMask).eq(0)); // both flags set to 0, indicating clear conditions
+  return image.updateMask(mask).select("B.*").copyProperties(image, ["system:time_start"]); // masked and scaled data, without the QA bands
+  }
+
+exports.maskS2clouds = maskS2clouds;

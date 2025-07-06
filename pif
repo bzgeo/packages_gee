@@ -1,0 +1,91 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* This script implements the Pseudo-Invariant Feature matching function developed by Aaron Zuspan *//
+// src: https://developers.google.com/earth-engine/tutorials/community/pseudo-invariant-feature-matching
+// Last updated: 15.04.2024
+
+// var d = require('users/servirbz/packages:pif');
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function pif(technique, to_modify, ref, roi) {
+
+// technique options = 'SID' (Spectral Information Divergence), 'SAM' (Spectral Angle Mapper), 'SEM' (Squared Euclidean Distance)
+// to_modify = image to modify; ref = reference image
+
+function matchBand(band, technique, to_modify, ref) {
+  
+  var distance = ref.spectralDistance(to_modify, technique);
+
+  var pif = distance.lt(distance.reduceRegion({reducer: ee.Reducer.percentile([10]), geometry: roi,
+  scale: 30, bestEffort: true, maxPixels: 1e13,}).getNumber('distance'));  
+  
+  var beforePif = ref.select([band]).updateMask(pif);
+  var afterPif = to_modify.select([band]).updateMask(pif);
+  var args = {reducer: ee.Reducer.linearFit(), geometry: roi, scale: 30, maxPixels: 1e13, bestEffort: true};
+  var coeffs = ee.Image.cat([afterPif, beforePif]).reduceRegion(args);
+  return to_modify.select([band]).multiply(coeffs.getNumber('scale')).add(coeffs.getNumber('offset')).toUint16().clip(roi);}
+
+return ee.Image.cat([
+  matchBand('B1', technique, to_modify, ref),
+  matchBand('B2', technique, to_modify, ref),
+  matchBand('B3', technique, to_modify, ref),
+  matchBand('B4', technique, to_modify, ref),
+  matchBand('B5', technique, to_modify, ref),
+  matchBand('B7', technique, to_modify, ref)])}
+
+///////////
+
+exports.pif = pif;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function pif_ps(technique, to_modify, ref, roi) {
+
+function matchBand(band, technique, to_modify, ref) {
+  
+  var distance = ref.spectralDistance(to_modify, technique);
+  var pif = distance.lt(distance.reduceRegion({reducer: ee.Reducer.percentile([10]), geometry: roi,
+  scale: 5, bestEffort: true, maxPixels: 1e13,}).getNumber('distance'));  
+  
+  var beforePif = ref.select([band]).updateMask(pif);
+  var afterPif = to_modify.select([band]).updateMask(pif);
+  var args = {reducer: ee.Reducer.linearFit(), geometry: roi, scale: 30, maxPixels: 1e13, bestEffort: true};
+  var coeffs = ee.Image.cat([afterPif, beforePif]).reduceRegion(args);
+  return to_modify.select([band]).multiply(coeffs.getNumber('scale')).add(coeffs.getNumber('offset')).toUint16().clip(roi);}
+
+return ee.Image.cat([
+  matchBand('B1', technique, to_modify, ref),
+  matchBand('B2', technique, to_modify, ref),
+  matchBand('B3', technique, to_modify, ref),
+  matchBand('B4', technique, to_modify, ref)])}
+
+exports.pif_ps = pif_ps;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function pif_landsat(technique, to_modify, ref, roi) {
+
+function matchBand(band, technique, to_modify, ref) {
+  
+  var distance = ref.spectralDistance(to_modify, technique);
+  var pif = distance.lt(distance.reduceRegion({reducer: ee.Reducer.percentile([10]), geometry: roi,
+  scale: 30, bestEffort: true, maxPixels: 1e13,}).getNumber('distance'));  
+  
+  var beforePif = ref.select([band]).updateMask(pif);
+  var afterPif = to_modify.select([band]).updateMask(pif);
+  var args = {reducer: ee.Reducer.linearFit(), geometry: roi, scale: 30, maxPixels: 1e13, bestEffort: true};
+  var coeffs = ee.Image.cat([afterPif, beforePif]).reduceRegion(args);
+  return to_modify.select([band]).multiply(coeffs.getNumber('scale')).add(coeffs.getNumber('offset')).toUint16().clip(roi);}
+
+return ee.Image.cat([
+  matchBand('B1', technique, to_modify, ref),
+  matchBand('B2', technique, to_modify, ref),
+  matchBand('B3', technique, to_modify, ref),
+  matchBand('B4', technique, to_modify, ref),
+  matchBand('B5', technique, to_modify, ref),
+  matchBand('B7', technique, to_modify, ref)])}
+
+exports.pif_landsat = pif_landsat;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////

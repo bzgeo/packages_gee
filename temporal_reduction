@@ -1,0 +1,423 @@
+/* Temporally 'reduce' an image collection -> the output is a new image collection */
+// last updated: 11.07.2024
+
+// This code is based on a script developed by Marcia Snyder (US EPA), and subsequently
+// edited by Noel Gorelick (Google), and Kel Markert (NASA SERVIR SCO).
+// Part 1 of this script will take daily data and generate monthly means (averages).
+
+// **************************************************************************************************************************************** //
+
+// USAGE INFO: In following fxn:
+// coll = input collection (e.g. 'MODIS/006/MOD11A1');
+// m1 = beginning month (e.g. 1 for January); m2 = end month (e.g. 12 for December)
+// y1 = beginning year (e.g. 2000); y2 = end year (e.g. 2010)
+
+// **************************************************************************************************************************************** //
+
+// IMPORTANT: for function to work, images must have the 'system:time_start' metadata. If images have been previously computed
+// using another function, the .set('system:time_start',img.get('system:time_start')) needs to have been used.
+
+// **************************************************************************************************************************************** //
+
+// PART 1: This part of the package extracts monthly data.
+
+function temp_red(coll, m1, m2, y1, y2) {
+  
+  var month_list = ee.List.sequence(m1,m2);
+  var year_list = ee.List.sequence(y1, y2);
+  
+  return ee.ImageCollection.fromImages(
+  year_list.map(function (ynz) {
+  return month_list.map(function(mnz){
+  var w = coll.filter(ee.Filter.calendarRange(ynz, ynz, 'year')).filter(ee.Filter.calendarRange(mnz, mnz, 'month')).median();
+  return w.set('year', ynz).set('month', mnz)
+                           .set('date', ee.Date.fromYMD(ynz,mnz,1))
+                           .set('system:time_start',ee.Date.fromYMD(ynz,mnz,1).millis());
+});
+}).flatten());
+}
+exports.temp_red = temp_red;
+
+// **************************************************************************************************************************************** //
+
+// PART 2: This part of the package extracts only one set of values per year,
+// compared to the above part of the package which extracts monthly data.
+
+function temp_red_yr(coll, y1, y2) {
+  
+  var year_list = ee.List.sequence(y1,y2);
+  
+  return ee.ImageCollection.fromImages(
+  year_list.map(function (yr) {
+  var w = coll.filter(ee.Filter.calendarRange(yr, yr, 'year'))
+  .filter(ee.Filter.calendarRange(1, 121))
+  .median();
+  return w.set('year', yr).set('month', 4).set('date', ee.Date.fromYMD(yr,4,30))
+  .set('system:time_start',ee.Date.fromYMD(yr,4,30));
+}).flatten());
+}
+exports.temp_red_yr = temp_red_yr;
+
+// Use full year
+
+function temp_red_yr_full(coll, y1, y2) {
+  
+  var year_list = ee.List.sequence(y1,y2);
+  
+  return ee.ImageCollection.fromImages(
+  year_list.map(function (yr) {
+  var w = coll.filter(ee.Filter.calendarRange(yr, yr, 'year'))
+  .median();
+  return w.set('year', yr).set('month', 4).set('date', ee.Date.fromYMD(yr,4,30))
+  .set('system:time_start',ee.Date.fromYMD(yr,4,30));
+}).flatten());
+}
+exports.temp_red_yr_full = temp_red_yr_full;
+
+
+// **Need to include another part of this script which allows for interactive filtering of the calendar range**
+
+function temp_red_yr_(coll, y1, y2, d1, d2) {
+  
+  var year_list = ee.List.sequence(y1,y2);
+  
+  return ee.ImageCollection.fromImages(
+  year_list.map(function (yr) {
+  var w = coll.filter(ee.Filter.calendarRange(yr, yr, 'year'))
+  .filter(ee.Filter.calendarRange(d1, d2))
+  .median();
+  return w.set('year', yr).set('month', 4).set('date', ee.Date.fromYMD(yr,4,30))
+  .set('system:time_start',ee.Date.fromYMD(yr,4,30));
+}).flatten());
+}
+exports.temp_red_yr_ = temp_red_yr_;
+
+//
+function temp_red_yr_x(coll, y1, y2, d1, d2) {
+  
+  var year_list = ee.List.sequence(y1,y2);
+  
+  return ee.ImageCollection.fromImages(
+  year_list.map(function (yr) {
+  var w = coll.filter(ee.Filter.calendarRange(yr, yr, 'year'))
+  .filter(ee.Filter.calendarRange(d1, d2))
+  .sum();
+  return w.set('year', yr).set('month', 5).set('date', ee.Date.fromYMD(yr,5,31))
+  .set('system:time_start',ee.Date.fromYMD(yr,5,31));
+}).flatten());
+}
+exports.temp_red_yr_x = temp_red_yr_x;
+
+//
+
+var from = [
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10,
+11,
+12,
+13,
+14,
+15,
+16,
+17,
+18,
+19,
+20,
+21,
+22,
+23,
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+35,
+36,
+37,
+38,
+39,
+40,
+41,
+42,
+43,
+44,
+45,
+46,
+47,
+48,
+49,
+50,
+51,
+52,
+53,
+54,
+55,
+56,
+57,
+58,
+59,
+60,
+61,
+62,
+63,
+64,
+65,
+66,
+67,
+68,
+69,
+70,
+71,
+72,
+73,
+74,
+75,
+76,
+77,
+78,
+79,
+80,
+81,
+82,
+83,
+84,
+85,
+86,
+87,
+88,
+89,
+90,
+91,
+92,
+93,
+94,
+95,
+96,
+97,
+98,
+99,
+100,
+101,
+102,
+103,
+104,
+105,
+106,
+107,
+108,
+109,
+110,
+111,
+112,
+113,
+114,
+115,
+116,
+117,
+118,
+119,
+120,
+121,
+122,
+123,
+124,
+125,
+126,
+127,
+128,
+129,
+130,
+131,
+132,
+133,
+134,
+135,
+136,
+137,
+138,
+139,
+140,
+141,
+142,
+143,
+144,
+145,
+146,
+147,
+148,
+149,
+150,
+151];
+
+var to = [
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1,
+1
+];
+
+exports.from = from;
+exports.to = to;
+
+// **************************************************************************************************************************************** //

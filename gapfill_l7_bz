@@ -1,0 +1,122 @@
+/* Performs Gap-filling on Landsat-7 SLC-off (post May 2003) imagery
+   Last updated: 16.09.2023
+ */
+
+// Version 1
+
+function gapfill_dn(day) {
+  
+  var aoi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+  
+  var l7 = ee.ImageCollection("LANDSAT/LE07/C01/T1_RT")
+    .filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median();
+  
+  var fill0 = l7.focal_mean(1, 'circle', 'pixels', 8);
+  var fill1 = fill0.blend(l7);
+  return fill1.clip(aoi);}
+
+exports.gapfill_dn = gapfill_dn;
+
+//
+
+function gapfill_dn_(day) {
+  
+  var aoi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+  
+  var l7_t1 = ee.ImageCollection("LANDSAT/LE07/C01/T1");
+  var l7_t2 = ee.ImageCollection("LANDSAT/LE07/C01/T2");
+  var l7_ = ee.ImageCollection(l7_t1.merge(l7_t2))
+    .filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median();
+  
+  var fill0 = l7_.focal_mean(1, 'circle', 'pixels', 8);
+  var fill1 = fill0.blend(l7_);
+  return fill1.clip(aoi);}
+
+exports.gapfill_dn_ = gapfill_dn_;
+
+//
+function gapfill_toa(day) {
+  
+  var aoi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+  
+  var l7 = ee.ImageCollection("LANDSAT/LE07/C01/T1_RT_TOA")
+    .filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median();
+  
+  var fill0 = l7.focal_mean(1, 'circle', 'pixels', 8);
+  var fill1 = fill0.blend(l7);
+  return fill1.clip(aoi);}
+
+exports.gapfill_toa = gapfill_toa;
+
+//
+
+function gapfill_dn_sr(day) {
+  
+  var aoi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+  
+  var l7_t1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR");
+  var l7_t2 = ee.ImageCollection("LANDSAT/LE07/C01/T2_SR");
+  var l7_ = ee.ImageCollection(l7_t1.merge(l7_t2))
+    .filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median();
+  
+  var fill0 = l7_.focal_mean(1, 'circle', 'pixels', 8);
+  var fill1 = fill0.blend(l7_);
+  return fill1.clip(aoi);}
+
+exports.gapfill_dn_sr = gapfill_dn_sr;
+
+//
+
+function gapfill_sr2(day) {
+  
+  var aoi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+  
+  var from = ['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','SR_B7']; // bands: blue, green, red, NIR, SWIR1, SWIR2
+  var to = ['B1','B2','B3','B4','B5','B7']; // renamed to same band names as Landsat-5, Landsat-7
+  
+  var l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
+    .filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median()
+    .select('SR_B.').select(from,to).multiply(0.0000275).add(-0.2).multiply(10000);
+  
+  var fill0 = l7.focal_mean(1, 'circle', 'pixels', 8);
+  var fill1 = fill0.blend(l7);
+  return fill1.clip(aoi);}
+
+exports.gapfill_sr2 = gapfill_sr2;
+
+//
+
+function gapfill_lst(day) {
+  
+  var aoi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+  
+  var from = ['ST_B6']; // bands: blue, green, red, NIR, SWIR1, SWIR2
+  var to = ['LST']; // renamed to same band names as Landsat-5, Landsat-7
+  
+  var l7 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
+    .filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median()
+    .select(from,to).multiply(0.00341802).add(149).add(-273.15);
+  
+  var fill0 = l7.focal_mean(1, 'circle', 'pixels', 8);
+  var fill1 = fill0.blend(l7);
+  return fill1.clip(aoi);}
+
+exports.gapfill_lst = gapfill_lst;
+
+//
+
+function gapfill(img) {return img.focal_mean(1, 'circle', 'pixels', 8).blend(img).set('system:time_start',img.get('system:time_start'))}
+
+exports.gapfill = gapfill;

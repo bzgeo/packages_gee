@@ -1,0 +1,57 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe"),
+    img1 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/PACE_OCI_20250415_20250422_L3m_8D_LANDVI_V3");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+ 
+var vi01 = img1.select([0]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi02 = img1.select([1]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi03 = img1.select([2]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi04 = img1.select([3]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi05 = img1.select([4]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi06 = img1.select([5]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi07 = img1.select([6]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi08 = img1.select([7]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi09 = img1.select([8]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+var vi10 = img1.select([9]).multiply(10000).toInt16().set('system:time_start',ee.Date.fromYMD(2025,4,22).millis());
+
+// projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/PACE_OCI_20250322_20250329_L3m_8D_LANDVI_V3
+
+Export.image.toAsset({image:vi01.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_01_ndvi_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi02.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_02_evi_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi03.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_03_ndwi_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi04.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_04_ndii_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi05.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_05_cci_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi06.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_06_ndsi_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi07.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_07_pri_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi08.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_08_cire_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi09.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_09_car_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:vi10.clip(roi),description:'export_ee_pace',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_10_mari_x52_4km',scale:4638.312214700219,
+region:roi, crs: 'EPSG:4326'});

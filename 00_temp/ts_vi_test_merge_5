@@ -1,0 +1,12 @@
+
+
+var c = require('users/bzgeo/hyperspectral_toolkit:00_pkg/ref_data_pace_oci');
+
+var pt1 = ee.Geometry.Point([-86.509, 34.7285]); // Monte Sano, Huntsville, AL, USA
+
+print(ui.Chart.image.series(c.pace_oci_8d_global_vi.select('ndvi'), pt1, ee.Reducer.mean(), 10000)
+    .setOptions({title: 'PACE OCI - VI - AL Monte Sano', lineWidth: 1, pointSize: 3, vAxis: {title: 'VI x 10,000'}, series:{0:{color:'limegreen'}}}));
+
+print(ui.Chart.image.series(c.pace_oci_8d_global_vi, pt1, ee.Reducer.mean(), 10000)
+    .setOptions({title: 'PACI OCI - VI - AL Monte Sano', lineWidth: 1, pointSize: 3, vAxis: {title: 'VI x 10,000'}}));
+

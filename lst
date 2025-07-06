@@ -1,0 +1,101 @@
+// Last updated: 21.02.2025
+
+// var c = require('users/servirbz/packages:lst');
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var msk_wtr = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1);
+exports.msk_wtr = msk_wtr;
+
+//
+
+function K2C(img){return img.multiply(ee.Number(0.1)).subtract(ee.Number(273.15))
+                            .set('system:time_start',img.get('system:time_start')).updateMask(msk_wtr);}
+exports.K2C = K2C;
+
+function K2C_(img){return img.multiply(ee.Number(0.1)).subtract(ee.Number(273.15))
+                            .set('system:time_start',img.get('system:time_start'))
+                            .reproject('EPSG:4326', null, 1000).updateMask(msk_wtr);}
+exports.K2C_ = K2C_;
+
+
+var flt_fire = function(img){return img.updateMask(img.lt(40));};
+exports.flt_fire = flt_fire;
+
+var flt_cloud = function(img){return img.updateMask(img.gte(10));};
+exports.flt_cloud = flt_cloud;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// LST data: Landsat
+
+// Landsat: Collection 1
+
+var c1_l5_1 = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR");
+var c1_l5_2 = ee.ImageCollection("LANDSAT/LT05/C01/T2_SR");
+var c1_l7_1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR");
+var c1_l7_2 = ee.ImageCollection("LANDSAT/LE07/C01/T2_SR");
+var c1_l8_1 = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR");
+var c1_l8_2 = ee.ImageCollection("LANDSAT/LC08/C01/T2_SR");
+
+
+
+var c1_l5_lst = ee.ImageCollection(c1_l5_1.merge(c1_l5_2)).select(['B6'],['lst']);
+var c1_l7_lst = ee.ImageCollection(c1_l7_1.merge(c1_l7_2)).select(['B6'],['lst']);
+var c1_l8_lst = ee.ImageCollection(c1_l8_1.merge(c1_l8_2)).select(['B10'],['lst']);
+var lst_l_c1 = c1_l8_lst.merge(c1_l5_lst.merge(c1_l7_lst)).map(K2C);
+
+exports.K2C = K2C;
+exports.lst_l_c1 = lst_l_c1;
+
+// Landsat: Collection 2
+
+var c2_l5_1 = ee.ImageCollection("LANDSAT/LT05/C02/T1_L2");
+var c2_l5_2 = ee.ImageCollection("LANDSAT/LT05/C02/T2_L2");
+var c2_l7_1 = ee.ImageCollection("LANDSAT/LE07/C02/T1_L2");
+var c2_l7_2 = ee.ImageCollection("LANDSAT/LE07/C02/T2_L2");
+var c2_l8_1 = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2");
+var c2_l8_2 = ee.ImageCollection("LANDSAT/LC08/C02/T2_L2");
+
+function toC(img) {return img.multiply(0.00341802).add(149.0)
+                            .subtract(ee.Number(273.15)).set('system:time_start',img.get('system:time_start'))
+                            .updateMask(msk_wtr);}
+
+var c2_l5_lst = ee.ImageCollection(c2_l5_1.merge(c2_l5_2)).select(['ST_B6'],['lst']);
+var c2_l7_lst = ee.ImageCollection(c2_l7_1.merge(c2_l7_2)).select(['ST_B6'],['lst']);
+var c2_l8_lst = ee.ImageCollection(c2_l8_1.merge(c2_l8_2)).select(['ST_B10'],['lst']);
+var lst_l_c2 = c2_l8_lst.merge(c2_l5_lst.merge(c2_l7_lst)).map(toC);
+
+exports.toC = toC;
+exports.lst_l_c2 = lst_l_c2;
+
+var pal_lst_l_c1 = {min: 22, max: 37, bands: ['lst']};
+var pal_lst_l_c2 = {min: 25, max: 47, bands: ['lst']};
+exports.pal_lst_l_c1 = pal_lst_l_c1;
+exports.pal_lst_l_c2 = pal_lst_l_c2;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// LST data: MODIS
+
+var mod11a1 = ee.ImageCollection("MODIS/006/MOD11A1").map(K2C_);
+var myd11a1 = ee.ImageCollection("MODIS/006/MYD11A1").map(K2C_);
+var mcd11a1_am = ee.ImageCollection(mod11a1.merge(myd11a1)).sort('system:time_start', true).select('LST_Day_1km');
+var mcd11a1_pm = ee.ImageCollection(mod11a1.merge(myd11a1)).sort('system:time_start', true).select('LST_Night_1km');
+
+exports.mod11a1 = mod11a1;
+exports.myd11a1 = myd11a1;
+exports.mcd11a1_am;
+exports.mcd11a1_pm;
+
+var mod11a1_daily_flt = mod11a1.map(flt_fire);
+var myd11a1_daily_flt = myd11a1.map(flt_fire);
+exports.mod11a1_daily_flt = mod11a1_daily_flt;
+exports.myd11a1_daily_flt = myd11a1_daily_flt;
+
+var mcd11a1_daily_am_flt = mcd11a1_am.map(flt_fire);
+var mcd11a1_daily_pm_flt = mcd11a1_pm.map(flt_fire);
+exports.mcd11a1_daily_am_flt = mcd11a1_daily_am_flt;
+exports.mcd11a1_daily_pm_flt = mcd11a1_daily_pm_flt;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

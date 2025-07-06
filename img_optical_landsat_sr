@@ -1,0 +1,20 @@
+
+var from_l5_l7 = ['B1','B2','B3','B4','B5','B7'];
+var from_l8 = ['B2','B3','B4','B5','B6','B7'];
+
+var to = ['B1','B2','B3','B4','B5','B7'];
+
+
+var l5_1 = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR");
+var l5_2 = ee.ImageCollection("LANDSAT/LT05/C01/T2_SR");
+var l7_1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR");
+var l7_2 = ee.ImageCollection("LANDSAT/LE07/C01/T2_SR");
+var l8_1 = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR");
+var l8_2 = ee.ImageCollection("LANDSAT/LC08/C01/T2_SR");
+
+var l5 = ee.ImageCollection(l5_1.merge(l5_2)).select(from_l5_l7,to);
+var l7_ = ee.ImageCollection(l7_1.merge(l7_2)).select(from_l5_l7,to);
+var l7 = l7_.filterBounds(roi).map(gapfill);
+var l8 = ee.ImageCollection(l8_1.merge(l8_2)).select(from_l8,to);
+var landsat = ee.ImageCollection(l5.merge(l7).merge(l8));
+

@@ -1,0 +1,330 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* Loads miscellaneous Belize, Central America datasets */
+// var x = require('users/servirbz/packages:bz/bz');
+//print(x)
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Belize: General boundaries
+var bz_poly = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_bounds_swbd");
+var bz_main = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_bounds_swbd_mainland");
+var bz_buff = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_bounds_swbd_buff60m");
+var bz_dist1 = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_districts");
+var bz_dist2 = ee.Image().byte().paint({featureCollection:bz_dist1,width:1});
+var bz_dist_w2 = ee.Image().byte().paint({featureCollection:bz_dist1,width:2});
+var roi_bz_box = ee.Geometry.Rectangle(-87.34, 15.73, -89.30, 18.60);
+var roi_bz_box2 = ee.Geometry.Rectangle(-87.718844, 15.585054, -89.991352, 19.289437);
+var bz_city_box = ee.Geometry.Rectangle(-88.23779934718948, 17.472177048279526, -88.17926281764846, 17.529150132426224);
+var bz_city_box2 = ee.Geometry.Rectangle(-88.24604, 17.47226, -88.16716, 17.54364);
+var bz = roi_bz_box;
+var bz2 = ee.Geometry.Rectangle(-87.4381, 15.8665, -89.2467, 18.52);
+var bz3 = ee.Geometry.Rectangle(-87.718844, 15.585054, -89.991352, 19.289437);
+var bz_marine = ee.FeatureCollection("users/servirbz/compil_ecosys/marine/bz_marine_inner_sea");
+var bz_marine2 = ee.FeatureCollection("users/servirbz/compil_ecosys/marine/bz_marine_inner_sea2");
+var bz_offshore = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_territory_offshore");
+var bz_territory = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_territory");
+var bz_landsat = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+
+// Belize: Belize City + Belize River discharge
+var pt_bz_city = ee.Geometry.Point([-88.20, 17.5]).buffer(250);
+var pt_discharge_bzr = ee.Geometry.Point([-88.23504807958386, 17.53286179619981]).buffer(100);
+var box_discharge_bzr = ee.Geometry.Rectangle(-88.2254, 17.5250, -88.2473, 17.5430);
+var bz_ws = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_watersheds_srtm30m");
+var bz_ws_ln = ee.Image().byte().paint({featureCollection:bz_ws,width:1});
+
+// Belize: Central Belize Corridor / Maya Forest Corridor
+var bz_cbc = ee.FeatureCollection("users/servirbz/compil_ecosys/_prot_areas/bz_cbc_aoi");
+var bz_cbc_ = ee.Image().byte().paint({featureCollection:"users/servirbz/compil_ecosys/_prot_areas/bz_cbc_aoi",width:2});
+
+var bz_mfc = ee.FeatureCollection("projects/bz-sdg/aoi/bz_mfc");
+var bz_mfc2 = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_mfc");
+var bz_mfc_ln = ee.Image().byte().paint({featureCollection:"projects/bz-sdg/aoi/bz_mfc",width:1});
+
+var bz_mfc_parcels = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_mfc_parcels");
+var bz_mfc_parcels_ln = ee.Image().byte().paint({featureCollection:bz_mfc_parcels,width:1});
+
+var bz_bigfalls = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_central_bigfalls_property_v2");
+var bz_bigfalls_ln1 = ee.Image().byte().paint({featureCollection:bz_bigfalls,width:1});
+var bz_bigfalls_ln2 = ee.Image().byte().paint({featureCollection:bz_bigfalls,width:2});
+
+var bz_bigfalls_box = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_central_bigfalls_property_gcs_box");
+var bz_bigfalls_box_ln = ee.Image().byte().paint({featureCollection:bz_bigfalls_box,width:2});
+
+// Belize: Maya Mountain Massif
+var bz_mmm = ee.FeatureCollection("users/servirbz/compil_ecosys/_prot_areas/bz_mm_massif");
+var bz_mmm_buff1km = ee.FeatureCollection("users/servirbz/compil_ecosys/_prot_areas/bz_mm_massif_buff1km");
+var bz_mmm_ln = ee.Image().byte().paint({featureCollection:bz_mmm,width:1});
+var bz_mmm_buff1km_ln = ee.Image().byte().paint({featureCollection:bz_mmm_buff1km,width:1});
+
+// Belize: Forest & Ecosystems
+var bz_for_1980 = ee.FeatureCollection("projects/bz-sdg/compil_ecosys/terrestrial/bz_forest_cover_svr_1980");
+var bz_lc_1980 = ee.Image("users/servirbz/compil_ecosys/terrestrial/bz_fcover_landsat_svr_1980");
+var bz_shrubland_2017 = ee.FeatureCollection("users/servirbz/compil_ecosys/terrestrial/bz_lc_shrubland_btfs_2017");
+var bz_shrubland_2017_ln = ee.Image().byte().paint({featureCollection:bz_shrubland_2017,width:1});
+var bz_shrubland_1989 = ee.FeatureCollection("users/servirbz/compil_ecosys/terrestrial/bz_lc_shrubland_lic_1989_1992");
+var bz_shrubland_1989_ln = ee.Image().byte().paint({featureCollection:bz_shrubland_1989,width:1});
+
+// Guatemala
+var gt_peten = ee.Image().byte().paint({featureCollection:"users/servirbz/aoi/lac/cam/gt/gt_borders_peten_l2",width:2});
+var gt_peten_ln = ee.FeatureCollection("users/servirbz/aoi/lac/cam/gt/gt_borders_peten_l2");
+var gt_peten_pt = ee.Geometry.Point([-90.0465, 17.5484]);
+var gt_peten_box = ee.Geometry.Rectangle(-91.50, 15.82, -89.13, 17.86);
+var gt_box = ee.Geometry.Rectangle(-92.3275, 13.6687, -88.1417, 18.199);
+
+// Other
+
+var sv_box = ee.Geometry.Polygon([[[-90.220, 14.536],[-90.220, 13.074],[-87.627, 13.074],[-87.627, 14.536]]], null, false);
+var pt_sv = ee.Geometry.Point([-89.11440228002958, 13.694115281255597]);
+
+// Other CAM & DR
+var cr = ee.FeatureCollection("users/servirbz/aoi/lac/cam/cr_minae"),
+    gt_ = ee.FeatureCollection("users/servirbz/aoi/lac/cam/gt_swbd"),
+    hn = ee.FeatureCollection("users/servirbz/aoi/lac/cam/hn_serna"),
+    ni = ee.FeatureCollection("users/servirbz/aoi/lac/cam/ni_marena"),
+    pn = ee.FeatureCollection("users/servirbz/aoi/lac/cam/pn_swbd"),
+    sv = ee.FeatureCollection("users/servirbz/aoi/lac/cam/sv_marn"),
+    do_rep = ee.FeatureCollection("users/servirbz/aoi/lac/car/do_semarena"),
+    mar = ee.FeatureCollection("users/servirbz/aoi/lac/cam/mar_aoi");
+
+// CAM boundaries
+var cam_poly = ee.FeatureCollection("users/servirbz/aoi/lac/cam/cam_aoi_buff1km");
+var cam_box_n = ee.Geometry.Rectangle(-91.5, 15.5, -87.7, 18.7);
+var cam_box = ee.Geometry.Rectangle(-76.92, 6.986, -92.52, 18.672);
+var mes_box = ee.Geometry.Rectangle(-76.1, 6.5, -92.5, 21.65); 
+var mes_box_ln = ee.Image().byte().paint({featureCollection:mes_box,width:1});
+var mes = ee.FeatureCollection("users/servirbz/aoi/lac/cam/mes_bounds_swbd");
+var mes_buff = ee.FeatureCollection("users/servirbz/aoi/lac/cam/mes_bounds_swbd_buff300m");
+
+// CAM line boundaries
+var bnds = ee.Image().byte().paint({featureCollection:"users/servirbz/aoi/lac/cam/cam_borders_ln",width:2});
+var bnds_w1 = ee.Image().byte().paint({featureCollection:"users/servirbz/aoi/lac/cam/cam_borders_ln",width:1});
+var bnds_w2 = ee.Image().byte().paint({featureCollection:"users/servirbz/aoi/lac/cam/cam_borders_ln",width:2});
+var bnds_w3 = ee.Image().byte().paint({featureCollection:"users/servirbz/aoi/lac/cam/cam_borders_ln",width:3});
+var bnds_global = ee.Image().byte().paint({featureCollection:"users/servirbz/aoi/global/world_country_bounds_esri",width:1});
+
+// Water mask
+var msk = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1);
+var land_water = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask');
+
+// Protected areas
+var pa0 = ee.FeatureCollection('WCMC/WDPA/202308/polygons').filter(ee.Filter.inList('ISO3', ['BLZ']));
+var pa1 = ee.FeatureCollection('WCMC/WDPA/202308/polygons').filter(ee.Filter.inList('ISO3', ['GTM']));
+//var pa_bz_ = ee.FeatureCollection("users/servirbz/compil_ecosys/_prot_areas/bz_prot_areas_btfs_2014");
+var pa_bz_ = ee.FeatureCollection("projects/bz-sdg/compil_ecosys/_prot_areas/bz_prot_areas_fd_2024");
+var pa = ee.Image().byte().paint({featureCollection:pa0,width:1});
+var pa_bz = ee.Image().byte().paint({featureCollection:pa_bz_,width:1});
+var pa_bz2 = ee.Image().byte().paint({featureCollection:pa_bz_,width:2});
+var pa_gt = ee.Image().byte().paint({featureCollection:pa1,width:1});
+var pa_cam = ee.Image().byte().paint({featureCollection:'WCMC/WDPA/202308/polygons',width:1}).clip(cam_box);
+var pa_mes = ee.Image().byte().paint({featureCollection:'WCMC/WDPA/202308/polygons',width:1}).clip(mes_buff);
+var pa_corridors = ee.Image().byte().paint({featureCollection:"users/servirbz/compil_ecosys/_prot_areas/mes_prot_areas_corridors_c2015",width:1});
+var mbc = ee.FeatureCollection("users/servirbz/compil_ecosys/_prot_areas/mes_prot_areas_corridors_c2015");
+var mbc_ = ee.Image().byte().paint({featureCollection:mbc,width:1});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var countries_mes = {
+  'Belize': bz_buff,
+  'Guatemala': gt_,
+  'El Salvador': sv,
+  'Honduras': hn,
+  'Nicaragua': ni,
+  'Costa Rica': cr,
+  'Panama': pn,
+  'Mesoamerica': mes_buff,
+};
+
+exports.countries_mes = countries_mes;
+
+var countries_mes_xy = {
+  'Belize': [-88.35, 17.256, 9],
+  'Guatemala': [-89.994, 16.1376, 8],
+  'El Salvador': [-88.9325, 13.725, 10],
+  'Honduras': [-87.2446, 14.7111, 8],
+  'Nicaragua': [-85.1726, 12.9489, 8],
+  'Costa Rica': [-84.227234, 9.884992, 8],
+  'Panama': [-79.6994, 9.0899, 8],
+  'Mesoamerica': [-86.799, 14.733, 6],
+};
+
+exports.countries_mes_xy = countries_mes_xy;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function update_roi() {
+  var country = selectLocation.getValue();
+  var roi = '';
+  if (country == 'Belize') {roi = a.bz_buff;}
+  else if (country == 'Guatemala') {roi = a.gt_;}
+  else if (country == 'El Salvador') {roi = a.sv;}
+  else if (country == 'Honduras') {roi = a.hn;}
+  else if (country == 'Nicaragua') {roi = a.ni;}
+  else if (country == 'Costa Rica') {roi = a.cr;}
+  else if (country == 'Panama') {roi = a.pn;}
+  else if (country == 'Mesoamerica') {roi = a.mes_buff;}
+}
+
+function roi_() {
+  var country = selectLocation.getValue();
+  
+  if (country == 'Belize') {roi = a.bz_buff;}
+  else if (country == 'Guatemala') {roi = a.gt_;}
+  else if (country == 'El Salvador') {roi = a.sv;}
+  else if (country == 'Honduras') {roi = a.hn;}
+  else if (country == 'Nicaragua') {roi = a.ni;}
+  else if (country == 'Costa Rica') {roi = a.cr;}
+  else if (country == 'Panama') {roi = a.pn;}
+  else if (country == 'Mesoamerica') {roi = a.mes_buff;}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Logos
+var logo_bzsdg = ee.Image("users/servirbz/compil_imagery/_logos/logo_bzsdg_col");
+var logo_svr = ee.Image("users/servirbz/compil_imagery/_logos/logo_svr");
+var branding1 = ui.Thumbnail({image:logo_bzsdg,params:{bands:['b1','b2','b3'],min:0,max:255},style:{width:'100px',height:'92.5px'}});
+var branding2 = ui.Thumbnail({image:logo_svr,params:{bands:['b1','b2','b3'],min:0,max:255},style:{width:'109.12px',height:'92.5px'}});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function hillshade(dem, az, ze) {
+  function radians(img) {return img.toFloat().multiply(3.1415927).divide(180);}
+  var terrain = ee.call('Terrain', dem);
+  var slope = radians(terrain.select(['slope']));
+  var aspect = radians(terrain.select(['aspect']));
+  var azimuth = radians(ee.Image(az));
+  var zenith = radians(ee.Image(ze));
+  return azimuth.subtract(aspect).cos().multiply(slope.sin()).multiply(zenith.sin()).add(zenith.cos().multiply(slope.cos()));}
+
+var hill = hillshade(ee.Image('WWF/HydroSHEDS/03VFDEM'),ee.Image(90),ee.Image(60));
+exports.hill = hill;
+
+var hill_bz = hill.clip(bz_buff).visualize({opacity:0.3,bands:["constant"],min:0.47,max:0.53});
+exports.hill_bz = hill_bz;
+
+var hill_gt = hill.clip(gt_).visualize({opacity:0.3,bands:["constant"],min:0.47,max:0.53});
+exports.hill_gt = hill_gt;
+
+var hill_mes = hill.clip(mes_buff).visualize({opacity:0.3,bands:["constant"],min:0.47,max:0.53});
+exports.hill_mes = hill_mes;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+exports.bz = bz;
+exports.bz2 = bz2;
+exports.bz3 = bz3;
+exports.bz_poly = bz_poly;
+exports.bz_main = bz_main;
+exports.bz_buff = bz_buff;
+exports.bz_buff60 = bz_buff;
+exports.bz_dist2 = bz_dist2;
+
+exports.bz_dist_w1 = bz_dist2;
+exports.bz_dist_w2 = bz_dist_w2;
+
+exports.pt_bz_city = pt_bz_city;
+exports.bz_city_box = bz_city_box;
+exports.bz_city_box2 = bz_city_box2;
+exports.roi_bz_box = roi_bz_box;
+exports.roi_bz_box2 = roi_bz_box2;
+
+exports.bz_ws = bz_ws;
+exports.bz_ws_ln = bz_ws_ln;
+exports.pt_discharge_bzr = pt_discharge_bzr;
+exports.box_discharge_bzr = box_discharge_bzr;
+
+exports.bz_marine = bz_marine;
+exports.bz_marine2 = bz_marine2;
+exports.bz_offshore = bz_offshore;
+exports.bz_territory = bz_territory;
+exports.bz_landsat = bz_landsat;
+
+exports.bz_cbc = bz_cbc;
+exports.bz_cbc_ = bz_cbc_;
+exports.bz_mfc = bz_mfc;
+exports.bz_mfc2 = bz_mfc2;
+exports.bz_mfc_ln = bz_mfc_ln;
+exports.bz_mfc_parcels = bz_mfc_parcels;
+exports.bz_mfc_parcels_ln = bz_mfc_parcels_ln;
+
+exports.bz_bigfalls = bz_bigfalls;
+exports.bz_bigfalls_ln = bz_bigfalls_ln1;
+exports.bz_bigfalls_ln1 = bz_bigfalls_ln1;
+exports.bz_bigfalls_ln2 = bz_bigfalls_ln2;
+
+exports.bz_bigfalls_box = bz_bigfalls_box;
+exports.bz_bigfalls_box_ln = bz_bigfalls_box_ln;
+
+exports.bz_mmm = bz_mmm;
+exports.bz_mmm_buff1km = bz_mmm_buff1km;
+exports.bz_mmm_ln = bz_mmm_ln;
+exports.bz_mmm_buff1km_ln = bz_mmm_buff1km_ln;
+
+exports.bz_for_1980 = bz_for_1980;
+exports.bz_lc_1980 = bz_lc_1980;
+exports.bz_shrubland_2017 = bz_shrubland_2017;
+exports.bz_shrubland_2017_ln = bz_shrubland_2017_ln;
+exports.bz_shrubland_1989 = bz_shrubland_1989;
+exports.bz_shrubland_1989_ln = bz_shrubland_1989_ln;
+
+exports.gt_ = gt_;
+exports.gt_peten_pt = gt_peten_pt;
+exports.gt_peten = gt_peten;
+exports.gt_peten_ln = gt_peten_ln;
+exports.gt_peten_box = gt_peten_box;
+exports.gt_box = gt_box;
+
+exports.sv_box = sv_box;
+exports.pt_sv = pt_sv;
+
+exports.cr = cr;
+exports.do_rep = do_rep;
+exports.hn = hn;
+exports.ni = ni;
+exports.pn = pn;
+exports.sv = sv;
+exports.mar = mar;
+
+exports.cam_poly = cam_poly;
+exports.cam_box_n = cam_box_n;
+exports.cam_box = cam_box;
+exports.mes = mes;
+exports.mes_buff = mes_buff;
+exports.mes_box = mes_box;
+exports.mes_box_ln = mes_box_ln;
+
+exports.bnds = bnds;
+exports.bnds_w1 = bnds_w1;
+exports.bnds_w2 = bnds_w2;
+exports.bnds_w3 = bnds_w3;
+exports.bnds_global = bnds_global;
+
+exports.pa = pa;
+exports.pa_bz = pa_bz;
+exports.pa_bz2 = pa_bz2;
+exports.pa_gt = pa_gt;
+exports.pa_cam = pa_cam;
+exports.pa_mes = pa_mes;
+exports.pa_corridors = pa_corridors;
+exports.mbc = mbc;
+exports.mbc_ = mbc_;
+
+exports.msk = msk;
+exports.msk_wtr = msk;
+exports.land_water = land_water;
+
+exports.logo_bzsdg = logo_bzsdg;
+exports.logo_svr = logo_svr;
+exports.branding1 = branding1;
+exports.branding2 = branding2;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function ln1(roi){return ee.Image().byte().paint({featureCollection:roi,width:1});}
+exports.ln1 = ln1;
+
+function ln2(roi){return ee.Image().byte().paint({featureCollection:roi,width:2});}
+exports.ln2 = ln2;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,169 @@
+// Performs 3-endmember SMA based on standardized values for PV, NPV, and bare substrate
+// Last updated: 09.08.24
+
+// var b = require('users/servirbz/packages:sma_std3');
+
+// Version 1: output bands NOT renamed
+
+function sma(img) {
+  
+  var msk = ee.Image('UMD/hansen/global_forest_change_2022_v1_10').select('datamask').eq(1); //Hansen et al. water mask
+  
+  var em_pv = [189, 409, 202, 3442, 1521, 600];
+  var em_npv = [381, 557, 682, 2627, 2400, 1800];
+  var em_bare = [664, 954, 1190, 1681, 2700, 2000];
+  
+  return img.unmix([em_bare, em_pv, em_npv], true, true).updateMask(msk).set('system:time_start',img.get('system:time_start'));
+}
+exports.sma = sma;
+
+// Version 2: renames output bands
+
+function sma_(img) {
+  
+  var fromBands = ['band_0', 'band_1', 'band_2'];
+  var toBands = ['bare', 'PV', 'NPV'];
+  
+  var msk = ee.Image('UMD/hansen/global_forest_change_2022_v1_10').select('datamask').eq(1); //Hansen et al. water mask
+  
+  var em_pv = [189, 409, 202, 3442, 1521, 600];
+  var em_npv = [381, 557, 682, 2627, 2400, 1800];
+  var em_bare = [664, 954, 1190, 1681, 2700, 2000];
+  
+  return img.unmix([em_bare, em_pv, em_npv], true, true).updateMask(msk).set('system:time_start',img.get('system:time_start')).select(fromBands,toBands);
+}
+exports.sma_ = sma_;
+
+//
+function sma4(img) {
+  
+  var fromBands = ['band_0', 'band_1', 'band_2', 'band_3'];
+  var toBands = ['bare', 'PV', 'NPV','water'];
+  
+  var msk = ee.Image('UMD/hansen/global_forest_change_2022_v1_10').select('datamask').eq(1); //Hansen et al. water mask
+  
+  var em_pv = [189, 409, 202, 3442, 1521, 600];
+  var em_npv = [381, 557, 682, 2627, 2400, 1800];
+  var em_bare = [664, 954, 1190, 1681, 2700, 2000];
+  var em_water = [50, 70, 100, 40, 20, 10];
+  
+  return img.unmix([em_bare, em_pv, em_npv, em_water], true, true)
+            .multiply(10000).toUint16()
+            .set('system:time_start',img.get('system:time_start'))
+            .select(fromBands,toBands);
+}
+exports.sma4 = sma4;
+
+
+// Version 2b: renames output bands, selects only PV band
+
+function sma_pv(img) {
+  
+  var fromBands = ['band_0', 'band_1', 'band_2'];
+  var toBands = ['bare', 'PV', 'NPV'];
+  
+  var msk = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1); //Hansen et al. water mask
+  
+  var em_pv = [189, 409, 202, 3442, 1521, 600];
+  var em_npv = [381, 557, 682, 2627, 2400, 1800];
+  var em_bare = [664, 954, 1190, 1681, 2700, 2000];
+  
+  return img.unmix([em_bare, em_pv, em_npv], true, true).updateMask(msk).set('system:time_start',img.get('system:time_start')).select(fromBands,toBands).select('PV');
+}
+exports.sma_pv = sma_pv;
+
+//
+
+var x_pct = function(img) {return img.multiply(ee.Number(100)).set('system:time_start',img.get('system:time_start'));};
+
+exports.x_pct = x_pct;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Forest cover extraction function
+function for_sma_70(img) {
+  var msk = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1); //Hansen et al. water mask
+  return ee.Image(0).where(img.select('PV').gt(0.70).and(img.select('bare').lt(0.30)),1).updateMask(msk).updateMask(img.select([0]).mask());}
+exports.for_sma_70 = for_sma_70;
+
+function for_sma_65(img) {
+  var msk = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1); //Hansen et al. water mask
+  return ee.Image(0).where(img.select('PV').gt(0.65).and(img.select('bare').lt(0.35)),1).updateMask(msk).updateMask(img.select([0]).mask());}
+exports.for_sma_65 = for_sma_65;
+
+
+function for_sma_60(img) {
+  var msk = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1); //Hansen et al. water mask
+  return ee.Image(0).where(img.select('PV').gt(0.60).and(img.select('bare').lt(0.40)),1).updateMask(msk).updateMask(img.select([0]).mask());}
+exports.for_sma_60 = for_sma_60;
+
+
+function for_sma_50(img) {
+  var msk = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1); //Hansen et al. water mask
+  return ee.Image(0).where(img.select('PV').gt(0.50).and(img.select('bare').lt(0.50)),1).updateMask(msk).updateMask(img.select([0]).mask());}
+exports.for_sma_50 = for_sma_50;
+
+
+//var pal_fc = {min:0,max:1,palette:['ffbebe','38a800']};
+var pal_fc = {min:0,max:1,palette:['salmon','green']};
+exports.pal_fc = pal_fc;
+
+var pal_fc2 = {min:0,max:1,palette:['salmon','green']};
+exports.pal_fc2 = pal_fc2;
+
+//var viz_543 = {min: 0, max: 4500, bands:['B5','B4','B3']};
+var viz_543 = {bands: ['B5', 'B4', 'B3'], min: [730, 1800, -740], max:[2200, 3800, 2000]};
+exports.viz_543 = viz_543;
+
+var to_bands_l5 = ['B1','B2','B3','B4','B5','B7'];
+exports.to_bands_l5 = to_bands_l5;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function chart_sma_day(roi, d1,d2) {
+
+var a = require('users/servirbz/packages:mcd43a4_glob1');
+return print(ui.Chart.image.series(a.mcd43a4_sma.filterDate(d1,d2).map(x_pct), roi, ee.Reducer.mean(), 20000)
+.setOptions({title: "Mean MODIS (MCD43A4)-derived fractional cover, daily",vAxis:{title:'% fractional cover'},
+pointSize:5,series:{0:{color:'burlywood'},1:{color:'lime'},2:{color:'red'}}}));
+}
+exports.chart_sma_day = chart_sma_day;
+
+///////
+
+function chart_sma_mt(roi, d1,d2) {
+
+var a = require('users/servirbz/packages:mcd43a4_glob1');
+return print(ui.Chart.image.series(a.mod43_mt_2003_2019.filterDate(d1,d2).map(sma_).map(x_pct), roi, ee.Reducer.mean(), 5000)
+.setOptions({title: "Mean MODIS (MCD43A4)-derived fractional cover, monthly",vAxis:{title:'% fractional cover'},
+pointSize:5,series:{0:{color:'burlywood'},1:{color:'lime'},2:{color:'red'}}}));
+}
+exports.chart_sma_mt = chart_sma_mt;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var cdx_sma = function(img1, img2, t1, t2) {
+
+var msk_wtr = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1);
+
+var for_msk = img1.select([1]).gte(t1).mask(img1.select([1]).gte(t1));
+
+var diff = img2.select([1]).subtract(img1.select([1])).divide(img1.select([1]))
+                .multiply(ee.Number(100)).focal_mean().mask(for_msk).updateMask(msk_wtr);
+
+return diff.lte(t2).mask(diff.lte(t2));
+};
+
+exports.cdx_sma = cdx_sma;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function ndvi_mcd43(img) {
+
+  var msk = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1); //Hansen et al. water mask
+  
+  return img.normalizedDifference(["b4","b3"]).set('system:time_start',img.get('system:time_start')).select(['nd'],['NDVI']);
+}
+exports.ndvi_mcd43 = ndvi_mcd43;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

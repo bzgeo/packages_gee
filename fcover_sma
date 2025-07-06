@@ -1,0 +1,178 @@
+/* Extracts forest cover based on SMA derivatives, uses 50% PV fraction threshold
+ */
+
+// Also useful but not required
+var b = require('users/servirbz/packages:sma_std3'); // package for spectral mixture analysis (SMA)
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+function fcover(img, pct, roi) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('band_1').gt(pct).and(img.select('band_0').lt(1-pct)),1)
+  .set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands)
+  .clip(roi).updateMask(img.select([0]).mask())
+  .updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1)); //
+}
+
+// user must define input SMA data (3 bands), as well as the region of interest (roi)
+
+exports.fcover = fcover;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+
+
+exports.fcover_ = fcover_;
+
+*/
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+function fcover_50_80(img) {
+  
+  var from = ['constant'];
+  var to_50 = ['CC50'];
+  var to_60 = ['CC60'];
+  var to_70 = ['CC70'];
+  var to_80 = ['CC80'];
+  
+  var fc50 = ee.Image(0).where(img.select('PV').gt(0.50).and(img.select('bare').lt(0.50)),1)
+  .set('system:time_start',img.get('system:time_start')).select(from,to_50)
+  .updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+  
+  var fc60 = ee.Image(0).where(img.select('PV').gt(0.60).and(img.select('bare').lt(0.40)),1)
+  .set('system:time_start',img.get('system:time_start')).select(from,to_60)
+  .updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+  
+  var fc70 = ee.Image(0).where(img.select('PV').gt(0.70).and(img.select('bare').lt(0.30)),1)
+  .set('system:time_start',img.get('system:time_start')).select(from,to_70)
+  .updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+  
+  var fc80 = ee.Image(0).where(img.select('PV').gt(0.80).and(img.select('bare').lt(0.20)),1)
+  .set('system:time_start',img.get('system:time_start')).select(from,to_80)
+  .updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+  
+  return ee.Image.cat([fc50, fc60, fc70, fc80]);
+}
+
+// user must define input SMA data (3 bands), as well as the region of interest (roi)
+
+exports.fcover_50_80 = fcover_50_80;
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 50% threshold
+
+function fcov50(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.5).and(img.select('bare').lt(0.5)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov50 = fcov50;
+
+// 60% treshold
+
+function fcov60(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.6).and(img.select('bare').lt(0.4)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov60 = fcov60;
+
+// 65% treshold
+
+function fcov65(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.65).and(img.select('bare').lt(0.35)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov65 = fcov65;
+
+// 70% treshold
+
+function fcov70(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.7).and(img.select('bare').lt(0.3)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov70 = fcov70;
+
+// 75% treshold
+
+function fcov75(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.75).and(img.select('bare').lt(0.25)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov75 = fcov75;
+
+// 80% treshold
+
+function fcov80(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.8).and(img.select('bare').lt(0.2)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov80 = fcov80;
+
+
+function fcov80_(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('band_1').gt(0.8).and(img.select('band_0').lt(0.2)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov80_ = fcov80_;
+
+
+// 90% treshold
+
+function fcov90(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.9).and(img.select('bare').lt(0.1)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov90 = fcov90;
+
+// 95% treshold
+
+function fcov95(img) {
+  
+  var fromBands = ['constant'];
+  var toBands = ['canopy_cover'];
+  
+  return ee.Image(0).where(img.select('PV').gt(0.95).and(img.select('bare').lt(0.05)),1).set('system:time_start',img.get('system:time_start'))
+  .select(fromBands,toBands).updateMask(ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1));
+}
+exports.fcov95 = fcov95;
+
+////////////////////////////////////////////////////////////////////////////////////////////////

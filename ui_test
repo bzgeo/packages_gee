@@ -1,0 +1,68 @@
+
+//var ux{
+
+// Display each image in the collection
+
+var imgLayer = null;
+var aoiLayer = null;
+var ptLayer = null;
+var imgDates = ee.List(collection.aggregate_array('date'));
+var imgIds = ee.List(collection.aggregate_array('system:index'));
+
+imgIds.evaluate(function(ids) {
+var size = ids.length;
+var showTitle = ui.Label("", {fontWeight: 'bold', color: 'blue'});
+var curIndex = 0;
+
+// Define buttons
+var previous = ui.Button("Earlier", function() {
+    curIndex += 1;
+    if (curIndex >= size) {curIndex = 0;}
+    showTitle.setValue(imgDates.get(curIndex).getInfo());
+    showSelectRawImage(ids[curIndex]);});
+var next = ui.Button("Later", function() {
+    curIndex -= 1;
+    if (curIndex < 0) {curIndex = total - 1;}
+    showTitle.setValue(imgDates.get(curIndex).getInfo());
+    showSelectRawImage(ids[curIndex]);});
+var buttonPanel = new ui.Panel([next, previous],ui.Panel.Layout.Flow('horizontal'));
+
+/////////////////////////////////////////
+
+showTitle.setValue(imgDates.get(curIndex).getInfo());
+showSelectRawImage(ids[curIndex]);
+
+/////////////////////////////////////////
+  
+var main = ui.Panel({
+widgets: [
+ui.Label('Sentinel-2 explorer: Belize River', {fontWeight: 'bold', fontSize: '18px', color: 'mediumblue'}), // UI title
+ui.Label("date / time of image shown: ", {fontWeight: 'bold'}),
+showTitle,
+buttonPanel,
+chart_ndci,
+ui.Thumbnail({image:x.logo_bzsdg, params:{bands:['b1','b2','b3'],min:0,max:255},style:{width:'200px',height:'185px'}}),
+ui.Label('credit: contains modified European Space Agency / Copernicus Sentinel data', {fontSize: '14px'})],style:{width:'300px', padding:'8px'}});
+ui.root.insert(0, main);
+});
+
+/////////////////////////////////////////
+
+function showSelectRawImage(key) {
+if (imgLayer !== null) {
+Map.remove(imgLayer);
+Map.remove(aoiLayer);
+Map.remove(ptLayer);
+}
+var image = ee.Image(collection.filter(ee.Filter.eq("system:index", key)).first());
+imgLayer = Map.addLayer(image, {bands: ['B4', 'B3', 'B2'], min: 475, max: 2000},key);
+aoiLayer = Map.addLayer(roi2, {palette: "red"},'Belize River discharge');
+ptLayer = Map.addLayer(pt, {color: 'green'},'Belize River discharge', false);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+Map.setOptions('TERRAIN');
+Map.centerObject(roi,13);
+
+}

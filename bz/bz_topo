@@ -1,0 +1,94 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/* Loads Belize's E-755 1:50,000 topographic sheets */
+// var x = require('users/servirbz/packages:bz/bz_topo');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var s01 = ee.Image("users/servirbz/bz_topo/e755_01");
+var s02 = ee.Image("users/servirbz/bz_topo/e755_02");
+var s03 = ee.Image("users/servirbz/bz_topo/e755_03");
+var s04 = ee.Image("users/servirbz/bz_topo/e755_04");
+var s05 = ee.Image("users/servirbz/bz_topo/e755_05");
+var s06 = ee.Image("users/servirbz/bz_topo/e755_06");
+var s07 = ee.Image("users/servirbz/bz_topo/e755_07");
+var s08 = ee.Image("users/servirbz/bz_topo/e755_08");
+var s09 = ee.Image("users/servirbz/bz_topo/e755_09");
+var s10 = ee.Image("users/servirbz/bz_topo/e755_10");
+var s11 = ee.Image("users/servirbz/bz_topo/e755_11");
+var s12 = ee.Image("users/servirbz/bz_topo/e755_12");
+var s13 = ee.Image("users/servirbz/bz_topo/e755_13");
+var s14 = ee.Image("users/servirbz/bz_topo/e755_14");
+var s15 = ee.Image("users/servirbz/bz_topo/e755_15");
+var s16 = ee.Image("users/servirbz/bz_topo/e755_16");
+var s17 = ee.Image("users/servirbz/bz_topo/e755_17");
+var s18 = ee.Image("users/servirbz/bz_topo/e755_18");
+var s19 = ee.Image("users/servirbz/bz_topo/e755_19");
+var s20 = ee.Image("users/servirbz/bz_topo/e755_20");
+var s21 = ee.Image("users/servirbz/bz_topo/e755_21");
+var s22 = ee.Image("users/servirbz/bz_topo/e755_22");
+var s23 = ee.Image("users/servirbz/bz_topo/e755_23");
+var s24 = ee.Image("users/servirbz/bz_topo/e755_24");
+var s25 = ee.Image("users/servirbz/bz_topo/e755_25");
+var s26 = ee.Image("users/servirbz/bz_topo/e755_26_27");
+var s28 = ee.Image("users/servirbz/bz_topo/e755_28");
+var s29 = ee.Image("users/servirbz/bz_topo/e755_29");
+var s30 = ee.Image("users/servirbz/bz_topo/e755_30");
+var s31 = ee.Image("users/servirbz/bz_topo/e755_31");
+var s32 = ee.Image("users/servirbz/bz_topo/e755_32");
+var s33 = ee.Image("users/servirbz/bz_topo/e755_33");
+var s34 = ee.Image("users/servirbz/bz_topo/e755_34");
+var s35 = ee.Image("users/servirbz/bz_topo/e755_35");
+var s36 = ee.Image("users/servirbz/bz_topo/e755_36");
+var s37 = ee.Image("users/servirbz/bz_topo/e755_37");
+var s38 = ee.Image("users/servirbz/bz_topo/e755_38");
+var s39 = ee.Image("users/servirbz/bz_topo/e755_39");
+var s40 = ee.Image("users/servirbz/bz_topo/e755_40");
+var s41 = ee.Image("users/servirbz/bz_topo/e755_41");
+var s42 = ee.Image("users/servirbz/bz_topo/e755_42");
+var s44 = ee.Image("users/servirbz/bz_topo/e755_44");
+
+exports.s01 = s01;
+exports.s02 = s02;
+exports.s03 = s03;
+exports.s04 = s04;
+exports.s05 = s05;
+exports.s06 = s06;
+exports.s07 = s07;
+exports.s08 = s08;
+exports.s09 = s09;
+exports.s10 = s10;
+exports.s11 = s11;
+exports.s12 = s12;
+exports.s13 = s13;
+exports.s14 = s14;
+exports.s15 = s15;
+exports.s16 = s16;
+exports.s17 = s17;
+exports.s18 = s18;
+exports.s19 = s19;
+exports.s20 = s20;
+exports.s21 = s21;
+exports.s22 = s22;
+exports.s23 = s23;
+exports.s24 = s24;
+exports.s25 = s25;
+exports.s26 = s26;
+exports.s28 = s28;
+exports.s29 = s29;
+exports.s30 = s30;
+exports.s31 = s31;
+exports.s32 = s32;
+exports.s33 = s33;
+exports.s34 = s34;
+exports.s35 = s35;
+exports.s36 = s36;
+exports.s37 = s37;
+exports.s38 = s38;
+exports.s39 = s39;
+exports.s40 = s40;
+exports.s41 = s41;
+exports.s42 = s42;
+exports.s44 = s44;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

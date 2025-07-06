@@ -1,0 +1,5 @@
+
+var d = require('users/servirbz/packages:bz/bz'); // imports Belize datasets
+
+Map.setOptions('SATELLITE');
+Map.centerObject(d.pt_bz_city, 8);

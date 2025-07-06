@@ -1,0 +1,31 @@
+/* Performs Gap-filling on Landsat-7 SLC-off (post May 2003) imagery
+ */
+
+// Version 1
+
+function gapfill_dn(day) {
+  
+  var aoi = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+  
+  var l7 = ee.ImageCollection("LANDSAT/LE07/C01/T1_RT")
+    .filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median();
+  
+  var fill0 = l7.focal_mean(1, 'circle', 'pixels', 8);
+  var fill1 = fill0.blend(l7);
+  return fill1.clip(aoi);}
+
+exports.gapfill_dn = gapfill_dn;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var a = require('users/servirbz/packages:gapfill_l7_bz'); 
+
+// Set scene center for view
+var center = ee.Geometry.Point([-88.20545196533203, 17.502628324085787]);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Map.addLayer(gapfill_dn('2018-07-28'),{min:11,max:155,bands:['B5','B4','B3']},'Landsat7_recent', true);
+Map.centerObject(center,9);

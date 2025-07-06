@@ -1,0 +1,87 @@
+/* Loads country boundary datasets  */
+
+// https://en.wikipedia.org/wiki/List_of_FIPS_country_codes
+// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+// https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3
+
+// var xx = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'XX'));
+// exports.xx = xx;
+
+// West Africa
+var bj = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'BJ'));
+var bf = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'BF'));
+var cv = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'CV'));
+var ci = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', "CI"));
+var cm = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', "CM"));
+var gh = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'GH'));
+var gn = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'GN'));
+var gw = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'GW'));
+var lr = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'LR'));
+var ml = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'ML'));
+var mr = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'MR'));
+var ne = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'NE'));
+var ng = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'NG'));
+var sn = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'SN'));
+var sl = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'SL'));
+var gm = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'GM'));
+var td = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'TD'));
+var tg = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'TG'));
+
+exports.bj = bj;
+exports.bf = bf;
+exports.cv = cv;
+exports.ci = ci;
+exports.cm = cm;
+exports.gh = gh;
+exports.gn = gn;
+exports.gw = gw;
+exports.lr = lr;
+exports.ml = ml;
+exports.mr = mr;
+exports.ne = ne;
+exports.ng = ng;
+exports.sn = sn;
+exports.sl = sl;
+exports.gm = gm;
+exports.td = td;
+exports.tg = tg;
+
+// Central America
+var bz = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'BZ'));
+var cr = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'CR'));
+var dom = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'DO'));
+var sv = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'SV'));
+var gtm = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'GT'));
+var hn = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'HN'));
+var ni = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'NI'));
+var pn = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'PN'));
+
+exports.bz = bz;
+exports.cr = cr;
+exports.dom = dom;
+exports.sv = sv;
+exports.gtm = gtm;
+exports.hn = hn;
+exports.ni = ni;
+exports.pn = pn;
+
+// Amazonia
+var bo = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'BO'));
+var br = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'BR'));
+var co = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'CO'));
+var ec = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'EC'));
+var gf = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'GF'));
+var gy = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'GY'));
+var pe = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'PE'));
+var sr = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'SR'));
+var ve = ee.FeatureCollection('USDOS/LSIB/2013').filter(ee.Filter.eq('iso_alpha2', 'VE'));
+
+exports.bo = bo;
+exports.br = br;
+exports.co = co;
+exports.ec = ec;
+exports.gf = gf;
+exports.gy = gy;
+exports.pe = pe;
+exports.sr = sr;
+exports.ve = ve;

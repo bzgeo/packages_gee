@@ -1,0 +1,65 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var img1 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202403_4km_"),
+    img2 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202404_4km_"),
+    img3 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202405_4km_"),
+    img4 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202406_4km_"),
+    img5 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202407_4km_"),
+    img6 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202408_4km_"),
+    img7 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202409_4km_"),
+    img8 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202410_4km_"),
+    img9 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202411_4km_"),
+    img10 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202412_4km_"),
+    img11 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202501_4km_"),
+    img12 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/us_pace_oci_sr_202502_4km_");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+var roi = ee.Geometry.Polygon([[[-125.2, 49.5], [-125.2, 24.5],[-66.0, 24.5],  [-66.0, 49.5]]], null, false);
+
+
+Export.image.toAsset({image:img1.updateMask(img1.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_01',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202403_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img2.updateMask(img2.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_02',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202404_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img3.updateMask(img3.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_03',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202405_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img4.updateMask(img4.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_04',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202406_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img5.updateMask(img5.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_05',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202407_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img6.updateMask(img6.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_06',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202408_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img7.updateMask(img7.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_07',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202409_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img8.updateMask(img8.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_08',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202410_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img9.updateMask(img9.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_09',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202411_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img10.updateMask(img10.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_10',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202412_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img11.updateMask(img11.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_11',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202501_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:img12.updateMask(img12.gt(0)).multiply(10000).toInt16().clip(roi),description:'export_ee_pace_4km_12',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/conus_04km/conus_pace_oci_sr_202502_4km',
+scale:4000,region: roi, crs: 'EPSG:4326'});

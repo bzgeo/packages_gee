@@ -1,0 +1,109 @@
+ 
+// var a = require('users/servirbz/packages:bz/ref_data');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Load ROI and water mask datasets
+
+var msk_land = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(1); // Limit to land
+var msk_wtr = ee.Image('UMD/hansen/global_forest_change_2015').select('datamask').eq(2); // Limit to water
+var msk_wtr_bz1 = ee.Image('projects/bz-sdg/aoi/bz_marine_ecosys_msk1').select('b1').eq(0);
+var msk_wtr_bz2 = ee.Image('projects/bz-sdg/aoi/bz_marine_ecosys_msk2').select('b1').eq(1);
+var roi1 = ee.Geometry.Rectangle(-87.44, 15.84, -88.97, 18.51);
+var roi1_ln = ee.Image().byte().paint({featureCollection:roi1,width:1});
+var roi2 = ee.FeatureCollection("projects/bz-sdg/aoi/bz_marine_ecosys_0");
+var roi3 = ee.FeatureCollection("projects/bz-sdg/aoi/bz_marine_ecosys_1");
+
+exports.msk_land = msk_land;
+exports.msk_wtr = msk_wtr_bz1;
+exports.msk_wtr_bz = msk_wtr_bz1;
+exports.msk_wtr_bz1 = msk_wtr_bz1;
+exports.msk_wtr_bz2 = msk_wtr_bz2;
+exports.roi1 = roi1;
+exports.roi2 = roi2;
+exports.roi3 = roi3;
+exports.roi1_ln = roi1_ln;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// S2 bands, for reference: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_SR#bands
+var s2_toa = ee.ImageCollection('COPERNICUS/S2'); // S2 TOA
+var s2_boa = ee.ImageCollection('COPERNICUS/S2_SR'); // S2 BOA
+
+// S2 visualization parameters
+var s2_vis_mar = {bands: ['B4', 'B3', 'B2'], min: -417, max: 870};
+var s2_vis_mar_ = {bands: ['B4', 'B3', 'B2'], min: 258, max: 1153};
+
+exports.s2_boa = s2_boa;
+exports.s2_toa = s2_toa;
+exports.s2_vis_mar = s2_vis_mar;
+exports.s2_vis_mar_ = s2_vis_mar_;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Classes - ONLY FOR REFERENCE
+var cl05 = ['algae','bare','seagrass','coral','water_deep'];
+var cl06 = ['algae','bare','seagrass','coral','water_deep','water_turbid'];
+
+var viz_mar_05 = {min:1,max:5,palette: ['olive','silver','lime','magenta','navy']}; // algae, bare, seagrass, coral, water
+var viz_mar_06 = {min:1,max:6,palette: ['olive','silver','lime','magenta','navy', 'blue']}; // algae, bare, seagrass, coral, water_deep, water_turbid
+var viz_mar_06b = {min:0,max:5,palette: ['olive','silver','lime','magenta','navy', 'blue']}; // algae, bare, seagrass, coral, water_deep, water_turbid
+
+
+var train_cl05a_sub500 = ee.FeatureCollection("projects/bz-sdg/x_tmp_train/bz_marine_subsample/bz_ecosys_marine_cl05a_sub500");
+var train_cl06a_sub500 = ee.FeatureCollection("projects/bz-sdg/x_tmp_train/bz_marine_subsample/bz_ecosys_marine_cl06a_sub500");
+
+exports.viz_mar_05 = viz_mar_05;
+exports.viz_mar_06 = viz_mar_06;
+exports.viz_mar_06b = viz_mar_06b;
+exports.train_cl05a_sub500 = train_cl05a_sub500;
+exports.train_cl06a_sub500 = train_cl06a_sub500;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var bz_s2_toa_20210126_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/sentinel2/bz_sentinel2_toa_2021-01-26_30m"),
+    bz_s2_toa_20210203_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/sentinel2/bz_sentinel2_toa_2021-02-03_30m");
+
+var bz_s2_toa_sgc_20210126_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/sentinel2/bz_sentinel2_toa_sgc_2021-01-26_30m"),
+    bz_s2_toa_sgc_20210203_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/sentinel2/bz_sentinel2_toa_sgc_2021-02-03_30m");
+
+var bz_s2_boa_20210126_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/sentinel2/bz_sentinel2_boa_2021-01-26_30m"),
+    bz_s2_boa_20210203_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/sentinel2/bz_sentinel2_boa_2021-02-03_30m");
+
+var bz_s2_dii_20210126_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/x_dii_misc/bz_s2_dii_20210126_30m");
+var bz_s2_dii_20210203_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/x_dii_misc/bz_s2_dii_20210203_30m");
+
+exports.bz_s2_toa_sgc_20210126_30m = bz_s2_toa_sgc_20210126_30m;
+exports.bz_s2_toa_sgc_20210203_30m = bz_s2_toa_sgc_20210203_30m;
+
+exports.bz_s2_toa_20210126_30m = bz_s2_toa_20210126_30m;
+exports.bz_s2_toa_20210203_30m = bz_s2_toa_20210203_30m;
+
+exports.bz_s2_boa_20210126_30m = bz_s2_boa_20210126_30m;
+exports.bz_s2_boa_20210203_30m = bz_s2_boa_20210203_30m;
+
+exports.bz_s2_dii_20210126_30m = bz_s2_dii_20210126_30m;
+exports.bz_s2_dii_20210203_30m = bz_s2_dii_20210203_30m;
+
+var bz_s2_2017_2021_30m = ee.Image("projects/bz-sdg/compil_imagery/optical/x_dii_misc/bz_s2_rrs3_20170331_20210331_30m");
+exports.bz_s2_2017_2021_30m = bz_s2_2017_2021_30m;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function rescale_10k(image){
+  var min = image.reduceRegion({reducer: ee.Reducer.min(),geometry: roi,scale: 30,maxPixels: 1e12});
+  var max = image.reduceRegion({reducer: ee.Reducer.max(),geometry: roi,scale: 30,maxPixels: 1e12});
+  var range = max.toImage().subtract(min.toImage());
+  return image.subtract(min.toImage()).divide(range).multiply(10000).int16();}
+
+exports.rescale_10k = rescale_10k;
+
+function rescale_1(image){
+  var min = image.reduceRegion({reducer: ee.Reducer.min(),geometry: roi,scale: 30,maxPixels: 1e12});
+  var max = image.reduceRegion({reducer: ee.Reducer.max(),geometry: roi,scale: 30,maxPixels: 1e12});
+  var range = max.toImage().subtract(min.toImage());
+  return image.subtract(min.toImage()).divide(range).float();}
+
+exports.rescale_1 = rescale_1;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,75 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe"),
+    img1a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_01_ndvi_filled_202403_202502_4km"),
+    img2a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_02_evi_filled_202403_202502_4km"),
+    img3a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_05_cci_filled_202403_202502_4km"),
+    img4a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_07_cire_filled_202403_202502_4km"),
+    img5a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_08_car_filled_202403_202502_4km"),
+    img6a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_09_mari_filled_202403_202502_4km"),
+    img7a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_filled/vi_10_pri_filled_202403_202502_4km"),
+    img1b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_01_ndvi_ft_c2_202403_202502_4km"),
+    img2b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_02_evi_ft_c2_202403_202502_4km"),
+    img3b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_05_cci_ft_c2_202403_202502_4km"),
+    img4b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_07_cire_ft_c2_202403_202502_4km"),
+    img5b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_08_car_ft_c2_202403_202502_4km"),
+    img6b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_09_mari_ft_c2_202403_202502_4km"),
+    img7b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/paci_oci/monthly_fitted/vi_10_pri_ft_c2_202403_202502_4km");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Last updated: 25.03.2025
+
+Export.image.toDrive({'image': img1a, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_ndvi_1', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_ndvi_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img2a, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_evi_1', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_evi_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img3a, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_cci_1', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_cci_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img4a, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_cire_1', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_cire_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img5a, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_car_1', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_car_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img6a, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_mari_1', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_mari_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img7a, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_pri_1', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_pri_ft_c2_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+/////
+Export.image.toDrive({'image': img1b, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_ndvi_2', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_ndvi_filled_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img2b, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_evi_2', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_evi_filled_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img3b, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_cci_2', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_cci_filled_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img4b, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_cire_2', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_cire_filled_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img5b, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_car_2', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_car_filled_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img6b, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_mari_2', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_mari_filled_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});
+
+Export.image.toDrive({'image': img7b, 'region': roi, 'scale': 4000,
+        'description': 'export_drv_pace_pri_2', 'folder': 'x_tmp_gee_outputs',
+        'fileNamePrefix': 'global_pace_oci_pri_filled_202403_202502_4km_gcs', 'crs': 'EPSG:4326', 'maxPixels': 1e13});

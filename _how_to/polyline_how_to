@@ -1,0 +1,14 @@
+
+var roi = ee.FeatureCollection("projects/servir-wa/aoi/afrique_ouest_aoi1");
+var bnds = ee.FeatureCollection("users/servirbz/aoi/global/world_country_bounds_esri");
+
+var a = require('users/servirbz/packages:polyline');
+var c = require('users/servirbz/packages:img_recent'); // imports the img_recent package
+var p = require('users/servirbz/packages:comp_mod43');
+
+c.most_recent_("MCD43A4", c.mcd43a4, roi);
+
+var mod43_2018 = p.modis_comp(roi, '2018-01-01', '2018-08-31');
+Map.addLayer(mod43_2018.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'MCD43A4_2018 - Africa', true);
+Map.addLayer(a.ln1(bnds).clip(roi),{palette: "black"},"Int'l boundary lines", true);
+Map.centerObject(roi, 4); // center viewer on 5 pilot countries

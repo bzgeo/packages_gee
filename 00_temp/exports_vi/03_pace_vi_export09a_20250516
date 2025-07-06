@@ -1,0 +1,22 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var img01 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/PACE_OCI_20250510_L3m_1D_LANDVI_V3"),
+    img02 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/PACE_OCI_20250511_L3m_1D_LANDVI_V3"),
+    img03 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/PACE_OCI_20250512_L3m_1D_LANDVI_V3"),
+    img04 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/PACE_OCI_20250513_L3m_1D_LANDVI_V3"),
+    img05 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/PACE_OCI_20250514_L3m_1D_LANDVI_V3"),
+    img06 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/PACE_OCI_20250515_L3m_1D_LANDVI_V3"),
+    img07 = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/PACE_OCI_20250516_L3m_1D_LANDVI_V3");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Last updated: 06.06.2025
+
+var roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe");
+
+var t = 'system:time_start';
+
+var img = ee.ImageCollection.fromImages([img01,img02,img03,img04,img05,img06,img07]).map(function(img){return img.updateMask(img.gte(-1))})
+                                    .median().toFloat().set(t,ee.Date.fromYMD(2025,5,16).millis());
+
+Export.image.toAsset({image:img.clip(roi),description:'export_ee_pace_vi',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/PACE_OCI_20250510_20250516_L3m_8D_LANDVI_V3',
+scale:4638.312214700219, region:roi, crs: 'EPSG:4326'});
+

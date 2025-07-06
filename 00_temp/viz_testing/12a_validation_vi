@@ -1,0 +1,99 @@
+
+var a = require('users/bzgeo/hyperspectral_toolkit:00_pkg/ref_data_pace_oci');
+var b = require('users/bzgeo/hyperspectral_toolkit:00_pkg/emit_hyperion_pace');
+
+var pt1 = ee.Geometry.Point([-86.509, 34.7285]); 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var s1_dsc = ee.ImageCollection("COPERNICUS/S1_GRD")
+    .filterDate('2024-03-01', '2025-03-31')
+    .filter(ee.Filter.eq('orbitProperties_pass', 'DESCENDING')) // Filter by descending orbit
+    .filterBounds(pt1)
+    .select(['VV','VH']);
+    
+var s1_asc = ee.ImageCollection("COPERNICUS/S1_GRD")
+    .filterDate('2024-03-01', '2025-03-31')
+    .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING')) // Filter by ascending orbit
+    .filterBounds(pt1)
+    .select(['VV','VH']);
+
+var myd11a1 = ee.ImageCollection("MODIS/061/MYD11A2")
+    .filterDate('2024-03-01', '2025-03-31')
+    .map(function(img){return img.select('LST_Day_1km').multiply(ee.Number(0.02)).subtract(ee.Number(273.15)).set('system:time_start',img.get('system:time_start'))});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var mt_sr = a.pace_oci_mt_conus;
+var mt_vi = a.pace_oci_mt_global_vi;
+
+var mt_sr_nir = a.pace_oci_mt_conus.select([109],['p860']);
+
+var mt_vi_evi1 = a.pace_oci_mt_global_vi.select('evi');
+var mt_vi_evi2 = a.pace_oci_mt_conus.map(b.rescale).map(b.evi);
+
+var comb_evi = mt_vi_evi1.merge(mt_vi_evi2);
+
+//
+
+var mt_vi_pri1 = a.pace_oci_mt_global_vi.select('pri');
+var mt_vi_pri2 = a.pace_oci_mt_conus.map(b.rescale).map(b.pri);
+
+//
+var mt_vi_cci1 = a.pace_oci_mt_global_vi.select('cci');
+var mt_vi_cci2 = a.pace_oci_mt_conus.map(b.rescale).map(b.cci);
+
+//
+var mt_vi_misc = a.pace_oci_mt_global_vi.select(["car","cire","mari"]);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+print(ui.Chart.image.series(mt_vi_evi1, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - VI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+    
+print(ui.Chart.image.series(mt_vi_evi2, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - VI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+
+print(ui.Chart.image.series(comb_evi, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - VI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+print(ui.Chart.image.series(s1_asc, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'Sentinel-1 (ascending) - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+
+print(ui.Chart.image.series(myd11a1, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'MODIS Aqua LST (PM) - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+
+/*
+print(ui.Chart.image.series(s1_dsc, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'Sentinel-1 (descending) - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+*/
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+print(ui.Chart.image.series(mt_sr_nir, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - NIR (p860) - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+
+print(ui.Chart.image.series(mt_vi_misc, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - VI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+print(ui.Chart.image.series(mt_vi_pri1, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - PRI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+    
+print(ui.Chart.image.series(mt_vi_pri2, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - PRI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+print(ui.Chart.image.series(mt_vi_cci1, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - CCI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+    
+print(ui.Chart.image.series(mt_vi_cci2, pt1, ee.Reducer.mean(), 4000)
+    .setOptions({title: 'PACE OCI - CCI - AL Monte Sano', lineWidth: 1, pointSize: 3}));
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

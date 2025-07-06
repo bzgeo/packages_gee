@@ -1,0 +1,93 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* This script generates mosaics from MODIS imagery (MOD09, MYD09, MCD43A4 products) *//
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* PART I - Defines variables for use in rest of script *//
+
+var fro_ = ['Nadir_Reflectance_Band3','Nadir_Reflectance_Band4','Nadir_Reflectance_Band1','Nadir_Reflectance_Band2','Nadir_Reflectance_Band6','Nadir_Reflectance_Band7'];
+var from = ['sur_refl_b03','sur_refl_b04','sur_refl_b01','sur_refl_b02','sur_refl_b06','sur_refl_b07'];
+var to = ['b1','b2','b3','b4','b6','b7'];
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var mod09t = ee.ImageCollection("MODIS/061/MOD09GA");
+var mod09a = ee.ImageCollection("MODIS/061/MYD09GA");
+var modis09 = ee.ImageCollection(mod09t.merge(mod09a));
+var mcd43 = ee.ImageCollection("MODIS/061/MCD43A4");
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var roi_bz = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/bz_bounds_swbd_buff60m");
+exports.roi_bz = roi_bz;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* PART II - Generates temporal composites (images) of MODIS imagery (MCD43A4 product) *//
+
+function modis_comp(aoi, date1, date2) {
+
+var mod43_ = mcd43.filterBounds(aoi).filterDate(date1, date2);
+var b1 = mod43_.select(['Nadir_Reflectance_Band3']).median().rename('b1');
+var b2 = mod43_.select(['Nadir_Reflectance_Band4']).median().rename('b2');
+var b3 = mod43_.select(['Nadir_Reflectance_Band1']).median().rename('b3');
+var b4 = mod43_.select(['Nadir_Reflectance_Band2']).median().rename('b4');
+var b6 = mod43_.select(['Nadir_Reflectance_Band6']).median().rename('b6');
+var b7 = mod43_.select(['Nadir_Reflectance_Band7']).median().rename('b7');
+
+var mod43_med = ee.Image.cat([b1, b2, b3, b4, b6, b7]).clip(aoi);
+return mod43_med;}
+
+exports.modis_comp = modis_comp;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var mod43 = function(roi, d1, d2){return mcd43.filterDate(d1, d2).select(fro_,to).median().clip(roi);};
+exports.mod43 = mod43;
+
+//////////////////
+
+var mod43_med = function(roi, d1, d2){return mcd43.filterDate(d1, d2).select(fro_,to).median().clip(roi);};
+exports.mod43_med = mod43_med;
+
+var mod43_mean = function(roi, d1, d2){return mcd43.filterDate(d1, d2).select(fro_,to).mean().clip(roi);};
+exports.mod43_mean = mod43_mean;
+
+var mod43_min = function(roi, d1, d2){return mcd43.filterDate(d1, d2).select(fro_,to).min().clip(roi);};
+exports.mod43_min = mod43_min;
+
+var mod43_max = function(roi, d1, d2){return mcd43.filterDate(d1, d2).select(fro_,to).max().clip(roi);};
+exports.mod43_max = mod43_max;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* PART III - Generates temporal composites (images) of MODIS imagery (MOD09 product) *//
+
+var mod09 = function(roi, d1, d2){return mod09t.filterDate(d1, d2).select(from,to).median().clip(roi);};
+exports.mod09 = mod09;
+
+var myd09 = function(roi, d1, d2){return mod09a.filterDate(d1, d2).select(from,to).median().clip(roi);};
+exports.myd09 = myd09;
+
+var mcd09 = function(roi, d1, d2){return modis09.filterDate(d1, d2).select(from,to).median().clip(roi);};
+exports.mcd09 = mcd09;
+
+//////////////////
+
+var mcd09_med = function(roi, d1, d2){return modis09.filterDate(d1, d2).select(from,to).median().clip(roi);};
+exports.mcd09_med = mcd09_med;
+
+var mcd09_mean = function(roi, d1, d2){return modis09.filterDate(d1, d2).select(from,to).mean().clip(roi);};
+exports.mcd09_mean = mcd09_mean;
+
+var mcd09_min = function(roi, d1, d2){return modis09.filterDate(d1, d2).select(from,to).min().clip(roi);};
+exports.mcd09_min = mcd09_min;
+
+var mcd09_max = function(roi, d1, d2){return modis09.filterDate(d1, d2).select(from,to).max().clip(roi);};
+exports.mcd09_max = mcd09_max;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////

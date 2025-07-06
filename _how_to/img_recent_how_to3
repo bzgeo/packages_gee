@@ -1,0 +1,101 @@
+
+
+var a = require('users/servirbz/packages:gapfill_l7_bz');
+var b = require('users/servirbz/packages:img_recent');  
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var pt = ee.Geometry.Point([-86.51861, 34.59963]).buffer(30);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+b.most_recent_("ASTER", b.aster, pt);
+b.most_recent_("Landsat-4 t1", b.l4_1, pt);
+b.most_recent_("Landsat-4 t2", b.l4_2, pt);
+b.most_recent_("Landsat-5 t1", b.l5_1, pt);
+b.most_recent_("Landsat-5 t2", b.l5_2, pt);
+b.most_recent_("Landsat-7 t1", b.l7_1, pt);
+b.most_recent_("Landsat-7 t2", b.l7_2, pt);
+b.most_recent_("Landsat-8 t1", b.l8_1, pt);
+b.most_recent_("Landsat-8 t2", b.l8_2, pt);
+b.most_recent_("Sentinel-2", b.s2, pt);
+b.most_recent_("MODIS-Terra", b.mod09, pt);
+b.most_recent_("MODIS-Aqua", b.myd09, pt);
+b.most_recent_("MCD43A4", b.mcd43a4, pt);
+b.most_recent_("VIIRS", b.viirs, pt);
+b.most_recent_("PROBA-V 100m", b.proba100, pt);
+b.most_recent_("PROBA-V 333m", b.proba333, pt);
+b.most_recent_("Sentinel-3", b.s3, pt);
+b.most_recent_("ALOS PALSAR", b.palsar, pt);
+b.most_recent_("S1 ascending", b.s1_asc, pt);
+b.most_recent_("S1 descending", b.s1_dsc, pt);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var t = 'system:time_start';
+var d = 'YYYY-MM-dd';
+
+var s1_asc_date = ee.Date(ee.Image(b.s1_asc.filterBounds(pt).sort(t, false).first()).get(t));
+var s1_dsc_date = ee.Date(ee.Image(b.s1_dsc.filterBounds(pt).sort(t, false).first()).get(t));
+var l7_date = ee.Date(ee.Image(b.l7_0.filterBounds(pt).sort(t, false).first()).get(t));
+var l8_date = ee.Date(ee.Image(b.l8_0.filterBounds(pt).sort(t, false).first()).get(t));
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+var s1 = ee.ImageCollection("COPERNICUS/S1_GRD_INT");
+var s1_ = ee.ImageCollection("COPERNICUS/S1_GRD");
+
+var s1_dsc_ = s1.filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+    .filterBounds(pt)
+    .filter(ee.Filter.eq('orbitProperties_pass', 'DESCENDING'))
+    .filterDate(s1_dsc_date.advance(-1, 'day'), s1_dsc_date.advance(2, 'day'))
+    .median().select('VV'); 
+
+var s1_asc_ = s1.filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+    .filterBounds(pt)
+    .filter(ee.Filter.eq('orbitProperties_pass', 'ASCENDING'))
+    .filterDate(s1_asc_date.advance(-1, 'day'), s1_asc_date.advance(2, 'day'))
+    .median().select('VV'); 
+
+var l7_ = ee.ImageCollection("LANDSAT/LE07/C01/T1_RT")
+    .filterBounds(pt)
+    .filterDate(l7_date, l7_date.advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [20])).median();
+    
+var l8_ = ee.ImageCollection("LANDSAT/LC08/C01/T1_RT")
+    .filterBounds(pt)
+    .filterDate(l8_date, l8_date.advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [20])).median();
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+Map.addLayer(s1_dsc_, {bands: ['VV'], min: 1300, max: 64000}, 's1_desc_recent', false);
+Map.addLayer(s1_asc_, {bands: ['VV'], min: 1300, max: 64000}, 's1_asc_recent', false);
+Map.addLayer(l7_, {min:11,max:155,bands:['B5','B4','B3']}, 'l7_recent', false);
+Map.addLayer(l8_, {min:4123,max:24000,bands:['B6','B5','B4']}, 'l8_recent', true);
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+Map.addLayer(pt, {color: 'blue'},'Green Mountain, Madison County, AL', true); // display point
+Map.centerObject(pt, 16);
+Map.setOptions('SATELLITE');
+
+
+var tempTimeSeries = ui.Chart.image.seriesByRegion(
+    s1_, pt, ee.Reducer.mean(), 'VV', 300, 'system:time_start', 'label')
+        .setChartType('ScatterChart')
+        .setOptions({
+          title: 'Radar backscatter over northern French Guiana',
+          vAxis: {title: 'Backscatter (dB)'},
+          lineWidth: 1,
+          pointSize: 4,
+          series: {
+            0: {color: '07870e'},
+}});
+
+// 10. Display the time-series graphic
+print(tempTimeSeries);
+
+
+
+/////////////////////////////////////// END /////////////////////////////////////////

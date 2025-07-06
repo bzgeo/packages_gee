@@ -1,0 +1,22 @@
+/* Extracts forest cover based on SMA derivatives, uses 50% PV fraction threshold
+ */
+
+function modis_comp(roi, date1, date2) {
+
+var mod43 = ee.ImageCollection("MODIS/006/MCD43A4").filterBounds(roi).filterDate(date1, date2);
+
+var b1 = mod43.select(['Nadir_Reflectance_Band3']).median().rename('b1');
+var b2 = mod43.select(['Nadir_Reflectance_Band4']).median().rename('b2');
+var b3 = mod43.select(['Nadir_Reflectance_Band1']).median().rename('b3');
+var b4 = mod43.select(['Nadir_Reflectance_Band2']).median().rename('b4');
+var b6 = mod43.select(['Nadir_Reflectance_Band6']).median().rename('b6');
+var b7 = mod43.select(['Nadir_Reflectance_Band7']).median().rename('b7');
+
+var mod43_med = ee.Image.cat([b1, b2, b3, b4, b6, b7]).clip(roi);
+
+Map.addLayer(mod43_med.clip(roi),{min:0,max:5000, bands:['b6','b4','b3']}, 'mod43_xxxx');
+Map.centerObject(roi);
+
+}
+
+exports.modis_comp = modis_comp;

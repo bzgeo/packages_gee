@@ -1,0 +1,50 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Landsat-7 ETM+ SCL-off gap fill - simple method
+// Objective: Fill Landsat scenes using focal mean function
+// Replicates the method indicated in: https://goo.gl/cXTQvW
+// Emil A. Cherrington, NASA SERVIR SCO (emil.cherrington@nasa.gov / eac0021@uah.edu)
+// Last update: 9 May 2018
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Load Landsat-7 ETM+ data for Belize for 24 March 2013 - unfilled
+var img1 = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR")
+    .filterDate('2013-03-22','2013-03-26')
+    .filter(ee.Filter.inList('WRS_PATH', [19]))
+    .filter(ee.Filter.inList('WRS_ROW', [47,48,49])).median()
+    .select(['B1','B2','B3','B4','B5','B7']);
+
+// Load Landsat-7 ETM+ data for Belize for 24 March 2013 - gapfilled using focal analysis function in ERDAS Imagine
+var img2 = ee.Image("users/servirbz/compil_imagery/optical/landsat/bz_landsat_boa/bz_20130324_l7_refl_");
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Test various fill parameters
+var filled1a = img1.focal_mean(1, 'square', 'pixels', 8);
+var filled1b = img1.focal_mean(1, 'circle', 'pixels', 8);
+var filled1c = img1.focal_mean(2, 'square', 'pixels', 6);
+var filled1a_ = filled1a.blend(img1); // combines unfilled image w/ result of focal mean operation (option 1)
+var filled1b_ = filled1b.blend(img1); // combines unfilled image w/ result of focal mean operation (option 2)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Image visualization parameters
+var viz = {min:0,max:3000,gamma:1,bands:['B5','B4','B3']}; // view w/ band 5-4-3 false color
+var viz2 = {min:0,max:3000,gamma:1,bands:['b5','b4','b3']}; // view w/ band 5-4-3 false color
+
+// Set scene center for view
+var center = ee.Geometry.Point([-88.20545196533203, 17.502628324085787]);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Map.addLayer(filled1a,viz,'Filled1a', false);
+// Map.addLayer(filled1b,viz,'Filled1b', false);
+// Map.addLayer(filled1c,viz,'Filled1c', false);
+Map.addLayer(filled1a_,viz,'L7_Belize_2013-03-24 - filled w/ EE, v1a', true);
+Map.addLayer(filled1b_,viz,'L7_Belize_2013-03-24 - filled w/ EE, v1b', true);
+Map.addLayer(img2,viz2,'L7_Belize_2013-03-24 - filled w/ ERDAS', false);
+Map.addLayer(img1,viz,'L7_Belize_2013-03-24 - non-filled', true);
+Map.centerObject(center,13); // center viewer over Belize City, zoom level 13
+
+//////////////////////////////////////////////////// END ///////////////////////////////////////////////////////////////////

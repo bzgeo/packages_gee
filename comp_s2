@@ -1,0 +1,116 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// var a = require('users/servirbz/packages:comp_s2');
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function maskS2clouds(image) {
+  var qa = image.select('QA60');
+  var cloudBitMask = ee.Number(2).pow(10).int();
+  var cirrusBitMask = ee.Number(2).pow(11).int();
+  var mask = qa.bitwiseAnd(cloudBitMask).eq(0).and(qa.bitwiseAnd(cirrusBitMask).eq(0));
+  return image.updateMask(mask).select("B.*").copyProperties(image, ["system:time_start"]);}
+
+var s2_comp = function(aoi, date) {return ee.ImageCollection('COPERNICUS/S2')
+    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20)).filterBounds(aoi)
+    .map(maskS2clouds).filterDate(ee.Date(date), ee.Date(date).advance(1, 'day')).median();};
+
+exports.s2_comp = s2_comp;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function mskS2(date, roi) {
+  var fro_s2 = ['B2','B3','B4','B8','B11','B12','QA60','SCL','MSK_CLDPRB'];
+  var to = ['B1','B2','B3','B4','B5','B7','QA60','SCL','MSK_CLDPRB'];
+  var s2 = ee.ImageCollection('COPERNICUS/S2_SR').filterBounds(roi)
+  .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day')).select(fro_s2,to).median();
+  
+  var cloudProb = s2.select('MSK_CLDPRB');
+  var scl = s2.select('SCL');
+  var shadow = s2.eq(3); // 3 = cloud shadow
+  var mask = cloudProb.lt(5).or(shadow).eq(1);
+  return s2.updateMask(mask).select(['B1','B2','B3','B4','B5','B7']).clip(roi);}
+
+exports.mskS2 = mskS2;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function s2_cloudless(aoi, date) {
+
+var CLOUD_FILTER = 60;
+var CLD_PRB_THRESH = 40;
+var NIR_DRK_THRESH = 0.15;
+var CLD_PRJ_DIST = 2;
+var BUFFER = 100;
+
+var fro_s2 = ['B2','B3','B4','B8','B11','B12'];
+var to = ['B1','B2','B3','B4','B5','B7'];
+
+// Part 1
+function s2_sr(img) {
+  // Import and filter S2 SR
+  var s2_sr_col = ee.ImageCollection('COPERNICUS/S2_SR')
+        .filterBounds(aoi).filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+        .filter(ee.Filter.lte('CLOUDY_PIXEL_PERCENTAGE', CLOUD_FILTER));
+  // Import and filter s2cloudless
+  var s2_cloudless_col = ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
+        .filterBounds(aoi).filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'));
+  // Join the filtered s2cloudless collection to the SR collection by the 'system:index' property
+  return ee.ImageCollection(ee.Join.saveFirst('s2cloudless').apply({
+        'primary': s2_sr_col, 'secondary': s2_cloudless_col,
+        'condition': ee.Filter.equals({'leftField': 'system:index', 'rightField': 'system:index'})}))}
+
+// Part 2
+function add_cloud_bands(img) {
+  // Get s2cloudless image, subset the probability band
+  var cld_prb = ee.Image(img.get('s2cloudless')).select('probability');
+  // Condition s2cloudless by the probability threshold value
+  var is_cloud = cld_prb.gt(CLD_PRB_THRESH).rename('clouds');
+  // Add the cloud probability layer and cloud mask as image bands
+  return img.addBands(ee.Image([cld_prb, is_cloud]))}
+
+// Part 3
+function add_shadow_bands(img){
+  // Identify water pixels from the SCL band
+  var not_water = img.select('SCL').neq(6);
+  // Identify dark NIR pixels that are not water (potential cloud shadow pixels)
+  var SR_BAND_SCALE = 1e4;
+  var dark_pixels = img.select('B8').lt(NIR_DRK_THRESH*SR_BAND_SCALE).multiply(not_water).rename('dark_pixels');
+  // Determine the direction to project cloud shadow from clouds (assumes UTM projection).
+  var shadow_azimuth = ee.Number(90).subtract(ee.Number(img.get('MEAN_SOLAR_AZIMUTH_ANGLE')));
+  // Project shadows from clouds for the distance specified by the CLD_PRJ_DIST input.
+  var cld_proj = (img.select('clouds').directionalDistanceTransform(shadow_azimuth, CLD_PRJ_DIST*10)
+        .reproject({'crs': img.select(0).projection(),'scale': 100}).select('distance').mask().rename('cloud_transform'));
+  // Identify the intersection of dark pixels with cloud shadow projection
+  var shadows = cld_proj.multiply(dark_pixels).rename('shadows');
+  // Add dark pixels, cloud projection, and identified shadows as image bands
+  return img.addBands(ee.Image([dark_pixels, cld_proj, shadows]));}
+
+// Part 4
+function add_cld_shdw_mask(img) {
+  // Add cloud component bands
+  var img_cloud = add_cloud_bands(img);
+  // Add cloud shadow component bands
+  var img_cloud_shadow = add_shadow_bands(img_cloud);
+  // Combine cloud and shadow mask, set cloud and shadow as value 1, else 0
+  var is_cld_shdw = img_cloud_shadow.select('clouds').add(img_cloud_shadow.select('shadows')).gt(0);
+  // Remove small cloud-shadow patches + dilate remaining pixels by BUFFER input. 20m scale is for speed; assumes clouds don't req. 10m.
+  is_cld_shdw = is_cld_shdw.focal_min(2).focal_max(BUFFER*2/20)
+    .reproject({'crs': img.select([0]).projection(),'scale': 20}).rename('cloudmask');
+  // Add the final cloud-shadow mask to the image
+  return img_cloud_shadow.addBands(is_cld_shdw);}
+
+// Part 5
+function apply_cld_shdw_mask(img){
+  //Subset the cloudmask band and invert it so clouds/shadow are 0, else 1.
+  var not_cld_shdw = img.select('cloudmask').not();
+  //Subset reflectance bands and update their masks, return the result.
+  return img.select('B.*').updateMask(not_cld_shdw);}
+
+return ee.ImageCollection(s2_sr(aoi, date)).map(add_cld_shdw_mask).map(apply_cld_shdw_mask).select(fro_s2,to).median().clip(aoi);
+
+}
+
+exports.s2_cloudless = s2_cloudless;
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////

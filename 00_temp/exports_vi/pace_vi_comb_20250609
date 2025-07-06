@@ -1,0 +1,97 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var roi = ee.FeatureCollection("projects/bz-sdg/aoi/aoi_globe"),
+    img1a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_01_ndvi_b57_4km"),
+    img2a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_02_evi_b57_4km"),
+    img3a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_05_cci_b57_4km"),
+    img4a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_07_cire_b57_4km"),
+    img5a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_08_car_b57_4km"),
+    img6a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_09_mari_b57_4km"),
+    img7a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_10_pri_b57_4km"),
+    img1b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_01_ndvi_x58_4km"),
+    img2b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_02_evi_x58_4km"),
+    img3b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_05_cci_x58_4km"),
+    img4b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_07_cire_x58_4km"),
+    img5b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_08_car_x58_4km"),
+    img6b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_09_mari_x58_4km"),
+    img7b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_10_pri_x58_4km");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Last updated: 13.06.2025
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+img1b = img1b.updateMask(img1b.gte(-10000));
+img2b = img2b.updateMask(img2b.gte(-10000));
+img3b = img3b.updateMask(img3b.gte(-10000));
+img4b = img4b.updateMask(img4b.gte(-10000));
+img5b = img5b.updateMask(img5b.gte(-10000));
+img6b = img6b.updateMask(img6b.gte(-10000));
+img7b = img7b.updateMask(img7b.gte(-10000));
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 01: NDVI
+var ndvi = ee.Image.cat([img1a,img1b.rename("b58")]);
+print(ndvi);
+//ndvi = coll(ndvi);
+
+// 02: EVI
+var evi = ee.Image.cat([img2a,img2b.rename("b58")]);
+print(evi);
+//evi = coll(evi);
+
+// 05: CCI
+var cci = ee.Image.cat([img3a,img3b.rename("b58")]);
+print(cci);
+//cci = coll(cci);
+
+// 07: CIRE*
+var cire = ee.Image.cat([img4a,img4b.rename("b58")]);
+print(cire);
+//cire = coll(cire);
+
+// 08: CAR*
+var car = ee.Image.cat([img5a,img5b.rename("b58")]);
+print(car);
+//car = coll(car);
+
+// 09: mARI
+var mari = ee.Image.cat([img6a,img6b.rename("b58")]);
+print(mari);
+//mari = coll(mari);
+
+// 10: PRI
+var pri = ee.Image.cat([img7a,img7b.rename("b58")]);
+print(pri);
+//pri = coll(pri);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Export.image.toAsset({image:ndvi,description:'export_ee_pace_ndvi',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_01_ndvi_b58_4km',scale:4638.312214700219,
+region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:evi,description:'export_ee_pace_evi',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_02_evi_b58_4km',scale:4638.312214700219,
+region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:cci,description:'export_ee_pace_cci',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_05_cci_b58_4km',scale:4638.312214700219,
+region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:cire,description:'export_ee_pace_cire',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_07_cire_b58_4km',scale:4638.312214700219,
+region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:car,description:'export_ee_pace_car',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_08_car_b58_4km',scale:4638.312214700219,
+region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:mari,description:'export_ee_pace_mari',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_09_mari_b58_4km',scale:4638.312214700219,
+region: roi, crs: 'EPSG:4326'});
+
+Export.image.toAsset({image:pri,description:'export_ee_pace_pri',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_vi/8day_4km/vi_10_pri_b58_4km',scale:4638.312214700219,
+region: roi, crs: 'EPSG:4326'});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,140 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PART 1 - local assets
+
+/* Exports composites of MODIS imagery to user's personal assets
+ */
+
+function export_modis_local(img,aoi) {
+Export.image.toAsset({
+  image: img.int16().clip(aoi),
+  description: 'export_mcd43_to_ee_local',
+  assetId: 'xx_mcd43a4_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_local = export_modis_local;
+
+/* Exports SMA derivatives of MODIS imagery to SWA assets
+ */
+
+function export_modis_sma_local(img,aoi) {
+Export.image.toAsset({
+  image: img.float().clip(aoi),
+  description: 'export_sma_to_ee_local',
+  assetId: 'xx_mcd43a4_sma_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_sma_local = export_modis_sma_local;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PART 2 - SERVIR-WA assets
+
+/* Exports composites of MODIS imagery to SWA assets
+ */
+
+function export_modis_swa(img,aoi) {
+Export.image.toAsset({
+  image: img.int16().clip(aoi),
+  description: 'export_mcd43_to_ee_swa',
+  assetId: 'projects/servir-wa/compil_imagery/optical/modis/africa/afr_mcd43a4_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_swa = export_modis_swa;
+
+/* Exports SMA derivatives of MODIS imagery to SWA assets
+ */
+
+function export_modis_sma_swa(img,aoi) {
+
+Export.image.toAsset({
+  image: img.float().clip(aoi),
+  description: 'export_sma_to_ee_swa',
+  assetId: 'projects/servir-wa/compil_imagery/optical/modis_sma/africa/afr_mcd43a4_sma_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_sma_swa = export_modis_sma_swa;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PART 3 - SERVIR-E&SA assets
+
+/* Exports composites of MODIS imagery to E&SA assets
+ */
+
+function export_modis_esa(img,aoi) {
+Export.image.toAsset({
+  image: img.int16().clip(aoi),
+  description: 'export_mcd43_to_ee_esa',
+  assetId: 'projects/servir-e-sa/compil_imagery/optical/modis/afr_mcd43a4_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_esa = export_modis_esa;
+
+/* Exports SMA derivatives of MODIS imagery to E&SA assets
+ */
+
+function export_modis_sma_esa(img,aoi) {
+
+Export.image.toAsset({
+  image: img.float().clip(aoi),
+  description: 'export_sma_to_ee_esa',
+  assetId: 'projects/servir-e-sa/compil_imagery/optical/modis_sma/afr_mcd43a4_sma_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_sma_esa = export_modis_sma_esa;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// PART 4 - SERVIR-Amazonia assets
+
+/* Exports composites of MODIS imagery to Amazonia assets
+ */
+
+function export_modis_amz(img,aoi) {
+Export.image.toAsset({
+  image: img.int16().clip(aoi),
+  description: 'export_mcd43_to_ee_amz',
+  assetId: 'projects/servir-amazonia/compil_imagery/optical/modis/lac/lac_mcd43a4_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_amz = export_modis_amz;
+
+/* Exports SMA derivatives of MODIS imagery to Amazonia assets
+ */
+
+function export_modis_sma_amz(img,aoi) {
+
+Export.image.toAsset({
+  image: img.float().clip(aoi),
+  description: 'export_sma_to_ee_amz',
+  assetId: 'projects/servir-amazonia/compil_imagery/optical/modis_sma/lac/lac_mcd43a4_sma_yyyydd',
+  scale: 500,
+  region: aoi,
+  maxPixels: 1800000000
+});
+}
+exports.export_modis_sma_amz = export_modis_sma_amz;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

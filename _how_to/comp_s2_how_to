@@ -1,0 +1,10 @@
+
+var a = require('users/servirbz/packages:polyline');
+var b = require('users/servirbz/packages:comp_s2');
+var roi = ee.FeatureCollection("projects/servir-wa/aoi/project_domains/wa_communes_ffem");
+
+var s2 = b.s2_comp('2018-01-01', '2018-04-30');
+
+Map.addLayer(s2.clip(roi), {bands:['B4', 'B3', 'B2'],min:1000,max:2440},'Sentinel-2 2018 mosaic');
+Map.addLayer(a.ln1(roi), {palette: ['red']},'AOI');
+Map.centerObject(roi, 7);

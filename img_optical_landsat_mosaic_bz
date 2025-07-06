@@ -1,0 +1,165 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* This script generates Landsat surface reflectance (BOA) mosaics for Belize *//
+// Last updated: 09.08.2024
+
+// var c = require('users/servirbz/packages:img_optical_landsat_mosaic_bz');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var b = require('users/servirbz/packages:bz/bz');
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function ndvi(img) {return img.normalizedDifference(['B4','B3']).multiply(1000).toInt16().rename('NDVI');}
+
+function l5(date) {return ee.ImageCollection("LANDSAT/LT05/C02/T1_L2")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000)
+    .select(['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','SR_B7'],['B1','B2','B3','B4','B5','B7']).toUint16().clip(roi);}
+
+function l7(date) {return ee.ImageCollection("LANDSAT/LE07/C02/T1_L2")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000)
+    .select(['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','SR_B7'],['B1','B2','B3','B4','B5','B7']).toUint16().clip(roi);}
+
+function l8(date) {return ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000)
+    .select(['SR_B2','SR_B3','SR_B4','SR_B5','SR_B6','SR_B7'],['B1','B2','B3','B4','B5','B7']).toUint16().clip(roi);}
+
+function l8_toa(date) {return ee.ImageCollection("LANDSAT/LC08/C02/T1_RT_TOA")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('B.').multiply(10000)
+    .select(['B2','B3','B4','B5','B6','B7'],['B1','B2','B3','B4','B5','B7']).toUint16().clip(roi);}
+    
+function l9(date) {return ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000)
+    .select(['SR_B2','SR_B3','SR_B4','SR_B5','SR_B6','SR_B7'],['B1','B2','B3','B4','B5','B7']).toUint16().clip(roi);}
+
+
+function l5_l7(date) {return ee.ImageCollection("LANDSAT/LT05/C02/T1_L2").merge(ee.ImageCollection("LANDSAT/LE07/C02/T1_L2"))
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000)
+    .select(['SR_B1','SR_B2','SR_B3','SR_B4','SR_B5','SR_B7'],['B1','B2','B3','B4','B5','B7']).toUint16().clip(roi);}
+
+function l8_l9(date) {return ee.ImageCollection("LANDSAT/LC08/C02/T1_L2").merge(ee.ImageCollection("LANDSAT/LC09/C02/T1_L2"))
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('SR_B.').multiply(0.0000275).add(-0.2).multiply(10000)
+    .select(['SR_B2','SR_B3','SR_B4','SR_B5','SR_B6','SR_B7'],['B1','B2','B3','B4','B5','B7']).toUint16().clip(roi);}
+
+/////
+
+exports.ndvi = ndvi;
+exports.l5 = l5;
+exports.l7 = l7;
+exports.l8 = l8;
+exports.l8_toa = l8_toa;
+exports.l9 = l9;
+
+exports.l5_l7 = l5_l7;
+exports.l8_l9 = l8_l9;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function lst_l8(date) {return ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('ST_B.*').multiply(0.00341802).add(149.0).subtract(ee.Number(273.15)).multiply(100)
+    .select(['ST_B10'],['LST']).toInt16().clip(roi).updateMask(b.msk);}
+
+function lst_toa_l8(date) {return ee.ImageCollection("LANDSAT/LC08/C02/T1_RT_TOA")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('B.*').subtract(ee.Number(273.15)).multiply(100)
+    .select(['B10','B11'],['LST_B10','LST_B11']).toInt16().clip(roi).updateMask(b.msk);}
+
+
+function lst_l9(date) {return ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('ST_B.*').multiply(0.00341802).add(149.0).subtract(ee.Number(273.15)).multiply(100)
+    .select(['ST_B10'],['LST']).toInt16().clip(roi).updateMask(b.msk);}
+
+
+function lst_l8_l9(date1,date2) {return ee.ImageCollection("LANDSAT/LC08/C02/T1_L2").merge(ee.ImageCollection("LANDSAT/LC09/C02/T1_L2"))
+    .filterDate(ee.Date(date1), ee.Date(date2))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .map(function(img){return img.select('ST_B.*').multiply(0.00341802).add(149.0).subtract(ee.Number(273.15)).multiply(100)})
+    .max().toInt16().clip(roi).select(['ST_B10'],['LST'])}
+
+
+function lst_toa_l9(date) {return ee.ImageCollection("LANDSAT/LC09/C02/T1_TOA")
+    .filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+    .filter(ee.Filter.inList('WRS_PATH', [19])).filter(ee.Filter.inList('WRS_ROW', [47,48,49]))
+    .median().select('B.*').subtract(ee.Number(273.15)).multiply(100)
+    .select(['B10','B11'],['LST_B10','LST_B11']).toInt16().clip(roi).updateMask(b.msk);}
+
+/////
+
+exports.lst_l8 = lst_l8;
+exports.lst_toa_l8 = lst_toa_l8;
+exports.lst_l9 = lst_l9;
+exports.lst_toa_l9 = lst_toa_l9;
+exports.lst_l8_l9 = lst_l8_l9;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var s2 = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED").select(['B2','B3','B4','B8','B11','B12'],['B1','B2','B3','B4','B5','B7']);
+
+function s2_bz(day) {return s2.filterBounds(roi3).filterDate(ee.Date(day).advance(-1, 'day'), ee.Date(day).advance(1, 'day')).median().toUint16().clip(roi2)}
+exports.s2_bz = s2_bz;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var csPlus = ee.ImageCollection('GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED'); // Cloud Score+ image collection.
+
+function s2_cl(date, thresh, qa) {
+    return s2.filterBounds(roi3).filterDate(ee.Date(date), ee.Date(date).advance(1, 'day'))
+             .linkCollection(csPlus, [qa])
+             .map(function(img) {return img.updateMask(img.select(qa).gte(thresh));}).median()}
+
+exports.s2_cl_bz = s2_cl;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var roi = ee.Geometry.Polygon([[[-90.17641068319044, 15.202874384792816],[-88.30873490194044, 14.927047257833143],
+          [-87.22108841756544, 19.480358129253737],[-89.17665482381544, 19.770105335207692]]]);
+
+var roi2 = ee.FeatureCollection("users/servirbz/aoi/lac/cam/bz/projects/bz_landsat_aoi");
+var roi3 = ee.Geometry.Rectangle(-87.34, 15.73, -89.30, 18.60);
+
+var bands = ee.List(['B1','B2','B3','B4','B5','B7']);
+var pal_ndvi = {min:-1000,max:1000,palette:['red','yellow','green'],bands:['NDVI']};
+//var viz_landsat_543 = {bands: ['B5', 'B4', 'B3'],min: 0, max: 4500};
+var viz_landsat_543 = {bands: ['B5', 'B4', 'B3'], min: [730, 1800, -740], max:[2200, 3800, 2000]};
+var viz2_landsat_543 = {bands: ['B5', 'B4', 'B3'],min: 100, max: 4000};
+var viz_landsat_321 = {bands: ['B5', 'B4', 'B3'],min: 200, max: 1700};
+//var viz_s2_543 = {bands:['B5','B4','B3'], min:100,max:4000};
+var viz_s2_543 = {bands: ['B5', 'B4', 'B3'], min: [730, 1800, -740], max:[2200, 3800, 2000]};
+var viz2_s2_543 = {bands: ['B11', 'B8', 'B4'], min: [730, 1800, -740], max:[2200, 3800, 2000]};
+
+
+/////
+
+exports.roi = roi;
+exports.roi2 = roi2;
+exports.roi3 = roi3;
+exports.bands = bands;
+exports.pal_ndvi = pal_ndvi;
+exports.viz_ndvi = pal_ndvi;
+exports.viz_landsat_543 = viz_landsat_543;
+exports.viz2_landsat_543 = viz2_landsat_543;
+exports.viz_landsat_321 = viz_landsat_321;
+exports.viz_s2_543 = viz_s2_543;
+exports.viz2_s2_543 = viz2_s2_543;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

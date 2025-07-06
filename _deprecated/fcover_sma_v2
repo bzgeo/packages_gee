@@ -1,0 +1,51 @@
+/* Extracts forest cover based on SMA derivatives, uses variable PV fraction threshold
+ */
+
+// 50% threshold
+
+function fcov50(img) {
+  return ee.Image(0).where(img.select('band_1').gt(0.5).and(img.select('band_0').lt(0.5)),1).set('system:time_start',img.get('system:time_start'));
+}
+exports.fcov50 = fcov50;
+
+// 60% treshold
+
+function fcov60(img) {
+  return ee.Image(0).where(img.select('band_1').gt(0.6).and(img.select('band_0').lt(0.4)),1).set('system:time_start',img.get('system:time_start'));
+}
+exports.fcov60 = fcov60;
+
+// 70% treshold
+
+function fcov70(img) {
+  return ee.Image(0).where(img.select('band_1').gt(0.7).and(img.select('band_0').lt(0.3)),1).set('system:time_start',img.get('system:time_start'));
+}
+exports.fcov70 = fcov70;
+
+// 75% treshold
+
+function fcov75(img) {
+  return ee.Image(0).where(img.select('band_1').gt(0.75).and(img.select('band_0').lt(0.25)),1).set('system:time_start',img.get('system:time_start'));
+}
+exports.fcov75 = fcov75;
+
+// 80% treshold
+
+function fcov80(img) {
+  return ee.Image(0).where(img.select('band_1').gt(0.8).and(img.select('band_0').lt(0.2)),1).set('system:time_start',img.get('system:time_start'));
+}
+exports.fcov80 = fcov80;
+
+// 90% treshold
+
+function fcov90(img) {
+  return ee.Image(0).where(img.select('band_1').gt(0.9).and(img.select('band_0').lt(0.1)),1).set('system:time_start',img.get('system:time_start'));
+}
+exports.fcov90 = fcov90;
+
+// 95% treshold
+
+function fcov95(img) {
+  return ee.Image(0).where(img.select('band_1').gt(0.95).and(img.select('band_0').lt(0.05)),1).set('system:time_start',img.get('system:time_start'));
+}
+exports.fcov95 = fcov95;

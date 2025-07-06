@@ -1,0 +1,45 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//* This script generates water quality indices from diff. collections of optical imagery (e.g. Landsat, Sentinel-2) *//
+// var wq = require('users/servirbz/packages:wqi');
+ 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+var constant = ['constant'];
+var nd = ['nd'];
+var b1 = ['B1'];
+
+var ndci = ['NDCI'];
+var ndti = ['NDTI'];
+var ndvi = ['NDVI'];
+var cloud = ['cloud_cover'];
+
+///////
+
+// ASTER, Landsat collections
+var ndti_l5 = function(img) {return img.normalizedDifference(["B3","B2"]).set('system:time_start',img.get('system:time_start')).select(nd,ndti)};
+var ndti_l7 = function(img) {return img.normalizedDifference(["B3","B2"]).set('system:time_start',img.get('system:time_start')).select(nd,ndti)};
+var ndti_l8 = function(img) {return img.normalizedDifference(["B4","B3"]).set('system:time_start',img.get('system:time_start')).select(nd,ndti)};
+
+var ndci_s2 = function(img) {return img.normalizedDifference(["B5","B4"]).set('system:time_start',img.get('system:time_start')).select(nd,ndci)};
+var ndti_s2 = function(img) {return img.normalizedDifference(["B4","B3"]).set('system:time_start',img.get('system:time_start')).select(nd,ndti)};
+var ndvi_s2 = function(img) {return img.normalizedDifference(["B8","B4"]).set('system:time_start',img.get('system:time_start')).select(nd,ndvi)};
+var cloud_s2 = function(img) {return img.select(['B1']).multiply(ee.Number(0.0001)).set('system:time_start',img.get('system:time_start')).select(b1,cloud)};
+
+//.select(constant,cloud)
+
+exports.ndti_l5 = ndti_l5;
+exports.ndti_l7 = ndti_l7;
+exports.ndti_l8 = ndti_l8;
+
+exports.ndci_s2 = ndci_s2;
+exports.ndti_s2 = ndti_s2;
+exports.ndvi_s2 = ndvi_s2;
+exports.cloud_s2 = cloud_s2;
+
+///////
+
+var pal_turb = ['332288','88CCEE','44AA99','999933','DDCC77','CC6677','882255','AA4499'];
+exports.pal_turb = pal_turb;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

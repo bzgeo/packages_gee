@@ -1,0 +1,23 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var img12a = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/global/globe_pace_oci_sr_v3_202502_1"),
+    img12b = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/global/globe_pace_oci_sr_v3_202502_2"),
+    img12c = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/global/globe_pace_oci_sr_v3_202502_3"),
+    img12d = ee.Image("projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/global/globe_pace_oci_sr_v3_202502_4");
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+// Last updated: 03.04.2025
+
+// var roi = img1.geometry().bounds();
+
+var roi = ee.Geometry.Polygon([[[-179.99, 85],[-179.99, -56],[180, -56],[180, 85]]],null, false);
+//print(roi);
+
+var img12 = img12d.updateMask(img12d.gt(0)).blend(img12c.updateMask(img12c.gt(0)))
+            .blend(img12b.updateMask(img12b.gt(0))).blend(img12a.updateMask(img12a.gt(0)));
+
+var vi12 = img12.updateMask(img12.gt(0)).set('system:time_start',ee.Date.fromYMD(2025,2,14).millis());
+
+Map.addLayer(roi, {}, 'ROI', 0);
+
+Export.image.toAsset({image:vi12.clip(roi),description:'export_ee_pace_orig_10km',
+assetId:'projects/bz-sdg/compil_imagery/hyperspectral/pace_oci_sr/global/globe_pace_oci_sr_v3_202502x',
+scale:11131.949268126318,region: roi, crs: 'EPSG:4326'});

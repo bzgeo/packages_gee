@@ -1,0 +1,11 @@
+
+var a = require('users/servirbz/packages:polyline');
+var b = require('users/servirbz/packages:countries2');
+
+var roi = b.ctry('BZ');
+//print(roi);
+
+Map.addLayer(a.ln1(b.ctry('BZ')), {palette: ['red']},'aoi_detailed');
+Map.addLayer(a.ln1(b.ctry_('BH')), {palette: ['lime']},'aoi_simplified');
+Map.setOptions('SATELLITE');
+Map.centerObject((b.ctry('BZ')), 8);
