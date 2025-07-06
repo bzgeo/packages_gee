@@ -1,4 +1,0 @@
-var dataset = ee.ImageCollection('MODIS/061/MCD64A1').select('BurnDate').filter(ee.Filter.date('2024-03-01', '2025-03-31'));
-
-Map.setCenter(-99.497, 38.834, 5);
-Map.addLayer(dataset, {min:1, max: 365, palette: ['red']}, 'Burned Area', 1);
